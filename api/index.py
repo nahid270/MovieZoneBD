@@ -1115,7 +1115,7 @@ contact_html = """
 </div>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
+    <a href="https://t.me/TGLinkBase" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
 </body>
 </html>
@@ -1152,7 +1152,7 @@ disclaimer_html = """
         <a href="{{ url_for('home') }}" class="back-link">&larr; Back to Home</a>
     </div>
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
+        <a href="https://t.me/TGLinkBase" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
     </footer>
 </body>
 </html>
@@ -1205,7 +1205,7 @@ dmca_html = """
         <a href="{{ url_for('home') }}" class="back-link">&larr; Back to Home</a>
     </div>
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
+        <a href="https://t.me/TGLinkBase" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
     </footer>
 </body>
 </html>
