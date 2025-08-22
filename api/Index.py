@@ -1,19 +1,3 @@
-অবশ্যই, আপনার অনুরোধ অনুযায়ী আমি কোডটি পরিবর্তন করেছি। আমি শুধু একটি জায়গায় ওয়েবসাইটের নাম পরিবর্তন করার ব্যবস্থা করেছি যাতে সব জায়গায় নামটি নিজে থেকেই আপডেট হয়ে যায়। অন্য কোনো কিছু পরিবর্তন করা হয়নি।
-
-আমি কোডের একদম উপরের দিকে `WEBSITE_NAME` নামে একটি নতুন ভেরিয়েবল তৈরি করে দিয়েছি। এখন থেকে আপনি শুধু এই একটি জায়গার নাম পরিবর্তন করলেই পুরো ওয়েবসাইটের সব জায়গায় (যেমন: টাইটেল, লোগো, ফুটার) নাম পরিবর্তন হয়ে যাবে।
-
-**যে পরিবর্তনটি করা হয়েছে:**
-
-কোডের উপরের দিকে এই লাইনটি যোগ করা হয়েছে:
-```python
-# --- [NEW] Website Name Configuration ---
-WEBSITE_NAME = "PmwBD"  # Change your website name here
-```
-আপনি শুধু `"PmwBD"` লেখাটি পরিবর্তন করে আপনার পছন্দের নাম দিলেই হবে।
-
-নিচে সম্পূর্ণ কোডটি দেওয়া হলো। আপনি এটি সরাসরি ব্যবহার করতে পারেন।
-
-```python
 import os
 import sys
 import re
@@ -43,7 +27,7 @@ DEVELOPER_USER_LINK = os.environ.get("DEVELOPER_USER_LINK", "https://t.me/Ctgmov
 NOTIFICATION_CHANNEL_ID = int(os.environ.get("NOTIFICATION_CHANNEL_ID", -1009876543210))
 
 # --- [NEW] Website Name Configuration ---
-WEBSITE_NAME = "PmwBD"  # Change your website name here
+WEBSITE_NAME = "MovieZoneBD"  # Change your website name here
 
 # --- Validate that all required environment variables are set ---
 required_vars = {
