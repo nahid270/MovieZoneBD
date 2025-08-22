@@ -20,6 +20,9 @@ BOT_USERNAME = os.environ.get("BOT_USERNAME", "MovieZoneBDBot")
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Moviezonebd")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Moviezonebd")
 
+# [MODIFIED] Centralized website name
+WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "MovieZoneBD") 
+
 MAIN_CHANNEL_LINK = os.environ.get("MAIN_CHANNEL_LINK", "https://t.me/+60goZWp-FpkxNzVl")
 UPDATE_CHANNEL_LINK = os.environ.get("UPDATE_CHANNEL_LINK", "https://t.me/AllBotUpdatemy")
 DEVELOPER_USER_LINK = os.environ.get("DEVELOPER_USER_LINK", "https://t.me/Ctgmovies23")
@@ -89,7 +92,8 @@ def inject_globals():
     return dict(
         ad_settings=(ad_codes or {}),
         bot_username=BOT_USERNAME,
-        main_channel_link=MAIN_CHANNEL_LINK
+        main_channel_link=MAIN_CHANNEL_LINK,
+        website_name=WEBSITE_NAME  # [MODIFIED] Inject website name globally
     )
 
 
@@ -110,12 +114,10 @@ def escape_markdown(text: str) -> str:
     escape_chars = r'_*[]()~`>#+-=|{}.!'
     return re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', text)
 
-# [NEW] Helper to get YouTube embed key from various URL formats
 def get_youtube_embed_key(url):
     if not url or not isinstance(url, str):
         return None
     try:
-        # Regex to find YouTube ID in various URL formats
         regex = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
         match = re.search(regex, url)
         return match.group(1) if match else None
@@ -129,7 +131,6 @@ def send_notification_to_channel(movie_data):
 
     try:
         with app.app_context():
-            # For Vercel, the URL might need to be constructed from environment variables
             host_url = f"https://{os.environ.get('VERCEL_URL')}" if os.environ.get('VERCEL_URL') else 'http://localhost:3000'
             movie_url = f"{host_url}{url_for('movie_detail', movie_id=str(movie_data['_id']))}"
 
@@ -195,7 +196,7 @@ index_html = """
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>PmwBD - Your Entertainment Hub</title>
+<title>{{ website_name }} - Your Entertainment Hub</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
   :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; --nav-height: 60px; }
@@ -300,7 +301,7 @@ index_html = """
     <div class="nav-left">
         <div class="menu-toggle"><i class="fas fa-bars"></i></div>
     </div>
-    <a href="{{ url_for('home') }}" class="logo">PmwBD</a>
+    <a href="{{ url_for('home') }}" class="logo">{{ website_name }}</a>
     <div class="nav-right">
         <div class="search-container">
             <form method="GET" action="/" class="search-form">
@@ -417,7 +418,7 @@ index_html = """
 </nav>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
 <script>
     const nav = document.querySelector('.main-nav');
@@ -455,7 +456,7 @@ detail_html = """
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>{{ movie.title if movie else "Content Not Found" }} - PmwBD</title>
+<title>{{ movie.title if movie else "Content Not Found" }} - {{ website_name }}</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
   :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
@@ -617,7 +618,7 @@ detail_html = """
             {% for pack in movie.season_packs | sort(attribute='quality') | sort(attribute='season') %}
               <div class="episode-item" style="background-color: #3e1a1a;">
                 <span class="episode-title">Complete Season {{ pack.season }} Pack ({{ pack.quality }})</span>
-                <a href="https://t.me/{{ bot_username }}?start={{ movie._id }}_S{{ pack.season }}_{{ pack.quality }}" class="episode-button" style="background-color: var(--netflix-red);"><i class="fas fa-box-open"></i> Get Season Pack</a>
+                <a href="https.t.me/{{ bot_username }}?start={{ movie._id }}_S{{ pack.season }}_{{ pack.quality }}" class="episode-button" style="background-color: var(--netflix-red);"><i class="fas fa-box-open"></i> Get Season Pack</a>
               </div>
             {% endfor %}
           {% endif %}
@@ -642,7 +643,7 @@ detail_html = """
 
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
@@ -652,7 +653,7 @@ detail_html = """
             
 genres_html = """
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /><title>{{ title }} - MovieZone</title>
+<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /><title>{{ title }} - {{ website_name }}</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
   :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; }
@@ -675,7 +676,7 @@ genres_html = """
 <div class="genre-grid">{% for genre in genres %}<a href="{{ url_for('movies_by_genre', genre_name=genre) }}" class="genre-card"><span>{{ genre }}</span></a>{% endfor %}</div></div>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
@@ -697,7 +698,7 @@ watch_html = """
     <iframe src="{{ watch_link }}" allowfullscreen allowtransparency allow="autoplay" scrolling="no" frameborder="0"></iframe>
     <!-- [NEW] Footer -->
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
     </footer>
 </div>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
@@ -710,7 +711,7 @@ admin_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - MovieZone</title>
+    <title>Admin Panel - {{ website_name }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <style>
@@ -945,7 +946,7 @@ edit_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Content - MovieZone</title>
+    <title>Edit Content - {{ website_name }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <style>
@@ -1078,7 +1079,7 @@ contact_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us / Report - MovieZone</title>
+    <title>Contact Us / Report - {{ website_name }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --netflix-red: #E50914; --netflix-black: #141414; --dark-gray: #222; --light-gray: #333; --text-light: #f5f5f5; }
@@ -1115,7 +1116,7 @@ contact_html = """
 </div>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
 </body>
 </html>
@@ -1128,7 +1129,7 @@ disclaimer_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disclaimer - PmwBD</title>
+    <title>Disclaimer - {{ website_name }}</title>
     <style>
         :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
         body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
@@ -1146,14 +1147,14 @@ disclaimer_html = """
 <body>
     <div class="container">
         <h1>Disclaimer</h1>
-        <p><strong>PmwBD.com</strong> does not host, store, or upload any video, films, or media files. Our site does not own any of the content displayed. We are not responsible for the accuracy, compliance, copyright, legality, decency, or any other aspect of the content of other linked sites.</p>
+        <p><strong>{{ website_name }}.com</strong> does not host, store, or upload any video, films, or media files. Our site does not own any of the content displayed. We are not responsible for the accuracy, compliance, copyright, legality, decency, or any other aspect of the content of other linked sites.</p>
         <p>The content available on this website is collected from various publicly available sources on the internet. We act as a search engine that indexes and displays hyperlinks to content that is freely available online. We do not exercise any control over the content of these external websites.</p>
         <p>All content is the copyright of their respective owners. We encourage all copyright owners to recognize that the links contained within this site are located elsewhere on the web. The embedded links are from other sites such as (but not limited to) YouTube, Dailymotion, Google Drive, etc. If you have any legal issues please contact the appropriate media file owners or host sites.</p>
         <p>If you believe that any content on our website infringes upon your copyright, please visit our <a href="{{ url_for('dmca') }}">DMCA page</a> for instructions on how to submit a takedown request.</p>
         <a href="{{ url_for('home') }}" class="back-link">&larr; Back to Home</a>
     </div>
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
     </footer>
 </body>
 </html>
@@ -1166,7 +1167,7 @@ dmca_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMCA Policy - PmwBD</title>
+    <title>DMCA Policy - {{ website_name }}</title>
     <style>
         :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
         body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
@@ -1185,7 +1186,7 @@ dmca_html = """
 <body>
     <div class="container">
         <h1>DMCA Copyright Infringement Notification</h1>
-        <p>PmwBD.com respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond promptly to notices of alleged copyright infringement.</p>
+        <p>{{ website_name }}.com respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond promptly to notices of alleged copyright infringement.</p>
         <p>As stated in our disclaimer, this website does not host any files on its servers. All content is provided by non-affiliated third parties from publicly available sources.</p>
         
         <h2>Procedure for Reporting Copyright Infringement:</h2>
@@ -1207,7 +1208,7 @@ dmca_html = """
         <a href="{{ url_for('home') }}" class="back-link">&larr; Back to Home</a>
     </div>
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
+        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
     </footer>
 </body>
 </html>
@@ -1415,7 +1416,6 @@ def movies_by_category(cat_name):
 @app.route('/coming_soon')
 def coming_soon(): return render_full_list(list(movies.find({"is_coming_soon": True}).sort('_id', -1)), "Coming Soon")
 
-# [NEW] Routes for Disclaimer and DMCA pages
 @app.route('/disclaimer')
 def disclaimer():
     return render_template_string(disclaimer_html)
@@ -1442,18 +1442,26 @@ def admin():
             "links": [], "files": [], "episodes": [], "season_packs": [], "languages": [], "streaming_links": []
         }
         
+        # [FIXED] Better TMDb data merging for manual adds
         if not movie_data.get('tmdb_id'):
             tmdb_details = get_tmdb_details_from_title(movie_data['title'], movie_data['type'])
             if tmdb_details:
-                tmdb_data_copy = tmdb_details.copy()
-                tmdb_data_copy.update(movie_data)
-                movie_data = tmdb_data_copy
+                # Prioritize form data, but fill in missing details from TMDb
+                # especially the poster if it's a placeholder.
+                if movie_data['poster'] == PLACEHOLDER_POSTER and tmdb_details.get('poster'):
+                    movie_data['poster'] = tmdb_details['poster']
+                
+                # Create a copy of TMDb details and update it with form data
+                # This ensures form data (e.g. custom title) is respected
+                final_data = tmdb_details.copy()
+                final_data.update(movie_data)
+                movie_data = final_data
+
 
         if movie_data['type'] == "movie":
             watch_link = request.form.get("watch_link", "").strip()
             if watch_link: movie_data['watch_link'] = watch_link
 
-            # [REVERTED] Handle Fixed Streaming Links
             streaming_links = [
                 ("480p", request.form.get("streaming_link_1", "").strip()),
                 ("720p", request.form.get("streaming_link_2", "").strip()),
@@ -1573,7 +1581,6 @@ def edit_movie(movie_id):
         if content_type == "movie":
             update_data["watch_link"] = request.form.get("watch_link", "").strip() or None
             
-            # [REVERTED] Handle Fixed Streaming Links
             streaming_links_data = [
                 ("480p", request.form.get("streaming_link_1", "").strip()),
                 ("720p", request.form.get("streaming_link_2", "").strip()),
@@ -1638,7 +1645,7 @@ def telegram_webhook():
     data = request.get_json()
     if 'channel_post' in data:
         post = data['channel_post']
-        if str(post.get('chat', {}).get('id')) != ADMIN_CHANNEL_ID: 
+        if str(post.get('chat', {}).get('id')) != str(ADMIN_CHANNEL_ID): 
             return jsonify(status='ok', reason='not_admin_channel')
         
         file = post.get('video') or post.get('document')
@@ -1675,8 +1682,9 @@ def telegram_webhook():
                 return existing_entry
             else:
                 print(f"WARNING: TMDb data not found for '{parsed_details['title']}'. Using/Creating a placeholder.")
+                # [FIXED] Flexible, case-insensitive title search to find existing manual entries
                 existing_entry = movies.find_one({
-                    "title": {"$regex": f"^{re.escape(parsed_details['title'])}$", "$options": "i"}, 
+                    "title": {"$regex": parsed_details['title'], "$options": "i"}, 
                     "tmdb_id": None
                 })
                 if not existing_entry:
@@ -1691,6 +1699,7 @@ def telegram_webhook():
                     newly_created_doc = movies.find_one({"_id": shell_doc['_id']})
                     send_notification_to_channel(newly_created_doc)
                     return newly_created_doc
+                print(f"INFO: Found existing manual entry for '{existing_entry['title']}'.")
                 return existing_entry
 
         content_entry = get_or_create_content_entry(tmdb_data, parsed_info)
@@ -1726,33 +1735,18 @@ def telegram_webhook():
         chat_id = message['chat']['id']
         text = message.get('text', '')
 
-        # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
-        print("\n--- [DEBUG] INCOMING MESSAGE ---")
-        print(f"CHAT ID: {chat_id}")
-        print(f"MESSAGE TEXT: {text}")
-        # --- [DEBUG] কোড শেষ ---
-
         if text.startswith('/start'):
             parts = text.split()
             if len(parts) > 1:
                 try:
                     payload_parts = parts[1].split('_')
                     doc_id_str = payload_parts[0]
-                    
-                    # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
-                    print(f"[DEBUG] Payload Parts: {payload_parts}")
-                    print(f"[DEBUG] Document ID String: {doc_id_str}")
-                    # --- [DEBUG] কোড শেষ ---
-                    
                     content = movies.find_one({"_id": ObjectId(doc_id_str)})
                     
-                    # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
                     if not content:
-                        print(f"[DEBUG] ERROR: Content not found in DB for ID: {doc_id_str}")
+                        print(f"[ERROR] Content not found in DB for ID: {doc_id_str}")
                         requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': f"Error: Could not find content with ID {doc_id_str}."})
                         return jsonify(status='ok')
-                    print(f"[DEBUG] Found content in DB: {content.get('title')}")
-                    # --- [DEBUG] কোড শেষ ---
 
                     message_to_copy_id = None
                     file_info_text = ""
@@ -1779,10 +1773,6 @@ def telegram_webhook():
                             message_to_copy_id = file.get('message_id')
                             file_info_text = f"({quality})"
                     
-                    # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
-                    print(f"[DEBUG] Final message_id to copy: {message_to_copy_id}")
-                    # --- [DEBUG] কোড শেষ ---
-
                     if message_to_copy_id:
                         caption_text = (
                             f"🎬 *{escape_markdown(content['title'])}* {escape_markdown(file_info_text)}\n\n"
@@ -1794,10 +1784,6 @@ def telegram_webhook():
                         payload = {'chat_id': chat_id, 'from_chat_id': ADMIN_CHANNEL_ID, 'message_id': message_to_copy_id, 'caption': caption_text, 'parse_mode': 'MarkdownV2'}
                         response = requests.post(f"{TELEGRAM_API_URL}/copyMessage", json=payload)
                         res = response.json()
-                        
-                        # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
-                        print(f"[DEBUG] Telegram API Response for copyMessage: {res}")
-                        # --- [DEBUG] কোড শেষ ---
                         
                         if res.get('ok'):
                             new_msg_id = res['result']['message_id']
