@@ -21,7 +21,7 @@ ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Moviezonebd")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Moviezonebd")
 
 # [MODIFIED] Centralized website name
-WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "MovieZoneBD") 
+WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "PmwBD") 
 
 MAIN_CHANNEL_LINK = os.environ.get("MAIN_CHANNEL_LINK", "https://t.me/+60goZWp-FpkxNzVl")
 UPDATE_CHANNEL_LINK = os.environ.get("UPDATE_CHANNEL_LINK", "https://t.me/AllBotUpdatemy")
@@ -53,7 +53,6 @@ TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 PLACEHOLDER_POSTER = "https://via.placeholder.com/400x600.png?text=Poster+Not+Found"
 app = Flask(__name__)
 
-# [NEW] Define categories
 CATEGORIES = ["Trending", "Latest Movie", "Latest Series", "Hindi", "Bengali", "English"]
 
 # --- Authentication ---
@@ -93,7 +92,7 @@ def inject_globals():
         ad_settings=(ad_codes or {}),
         bot_username=BOT_USERNAME,
         main_channel_link=MAIN_CHANNEL_LINK,
-        website_name=WEBSITE_NAME  # [MODIFIED] Inject website name globally
+        website_name=WEBSITE_NAME
     )
 
 
@@ -206,7 +205,7 @@ index_html = """
   ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #222; } ::-webkit-scrollbar-thumb { background: #555; } ::-webkit-scrollbar-thumb:hover { background: var(--netflix-red); }
   
   /* [MODIFIED] Main Nav for Centered Logo & Menu */
-  .main-nav { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: background-color 0.3s ease; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 10%, rgba(0,0,0,0)); }
+  .main-nav { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: background-color: 0.3s ease; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 10%, rgba(0,0,0,0)); }
   .main-nav.scrolled { background-color: var(--netflix-black); }
   .nav-left, .nav-right { display: flex; align-items: center; flex: 1; }
   .nav-right { justify-content: flex-end; }
@@ -225,7 +224,7 @@ index_html = """
   .nav-links a { font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease; }
   .nav-links a:hover { color: var(--netflix-red); }
   .search-container { }
-  .search-input { background-color: rgba(0,0,0,0.7); border: 1px solid #777; color: var(--text-light); padding: 8px 15px; border-radius: 4px; transition: width 0.3s ease, background-color 0.3s ease; width: 250px; }
+  .search-input { background-color: rgba(0,0,0,0.7); border: 1px solid #777; color: var(--text-light); padding: 8px 15px; border-radius: 4px; transition: width 0.3s ease, background-color: 0.3s ease; width: 250px; }
   .search-input:focus { background-color: rgba(0,0,0,0.9); border-color: var(--text-light); outline: none; }
   
   /* [MODIFIED] Hero Section Height */
@@ -618,7 +617,7 @@ detail_html = """
             {% for pack in movie.season_packs | sort(attribute='quality') | sort(attribute='season') %}
               <div class="episode-item" style="background-color: #3e1a1a;">
                 <span class="episode-title">Complete Season {{ pack.season }} Pack ({{ pack.quality }})</span>
-                <a href="https.t.me/{{ bot_username }}?start={{ movie._id }}_S{{ pack.season }}_{{ pack.quality }}" class="episode-button" style="background-color: var(--netflix-red);"><i class="fas fa-box-open"></i> Get Season Pack</a>
+                <a href="https://t.me/{{ bot_username }}?start={{ movie._id }}_S{{ pack.season }}_{{ pack.quality }}" class="episode-button" style="background-color: var(--netflix-red);"><i class="fas fa-box-open"></i> Get Season Pack</a>
               </div>
             {% endfor %}
           {% endif %}
@@ -1122,7 +1121,6 @@ contact_html = """
 </html>
 """
 
-# [NEW] HTML template for the Disclaimer page
 disclaimer_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -1160,7 +1158,6 @@ disclaimer_html = """
 </html>
 """
 
-# [NEW] HTML template for the DMCA page
 dmca_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -1429,30 +1426,36 @@ def dmca():
 @requires_auth
 def admin():
     if request.method == "POST":
+        # [FIXED] Automatically add default category based on content type
+        content_type = request.form.get("content_type", "movie")
+        selected_categories = request.form.getlist("categories")
+
+        if content_type == 'movie':
+            if "Latest Movie" not in selected_categories:
+                selected_categories.append("Latest Movie")
+        elif content_type == 'series':
+            if "Latest Series" not in selected_categories:
+                selected_categories.append("Latest Series")
+        
         movie_data = {
             "title": request.form.get("title", "").strip(),
-            "type": request.form.get("content_type", "movie"),
+            "type": content_type,
             "poster": request.form.get("poster", "").strip() or PLACEHOLDER_POSTER,
             "overview": request.form.get("overview", "").strip(),
             "genres": [g.strip() for g in request.form.get("genres", "").split(',') if g.strip()],
             "trailer_link": request.form.get("trailer_link", "").strip() or None,
             "poster_badge": request.form.get("poster_badge", "").strip() or None,
-            "categories": request.form.getlist("categories"),
+            "categories": selected_categories,
             "is_coming_soon": request.form.get("is_coming_soon") == "true",
             "links": [], "files": [], "episodes": [], "season_packs": [], "languages": [], "streaming_links": []
         }
         
-        # [FIXED] Better TMDb data merging for manual adds
         if not movie_data.get('tmdb_id'):
             tmdb_details = get_tmdb_details_from_title(movie_data['title'], movie_data['type'])
             if tmdb_details:
-                # Prioritize form data, but fill in missing details from TMDb
-                # especially the poster if it's a placeholder.
                 if movie_data['poster'] == PLACEHOLDER_POSTER and tmdb_details.get('poster'):
                     movie_data['poster'] = tmdb_details['poster']
                 
-                # Create a copy of TMDb details and update it with form data
-                # This ensures form data (e.g. custom title) is respected
                 final_data = tmdb_details.copy()
                 final_data.update(movie_data)
                 movie_data = final_data
@@ -1665,6 +1668,9 @@ def telegram_webhook():
         tmdb_data = get_tmdb_details_from_title(parsed_info['title'], parsed_info['type'], parsed_info.get('year'))
 
         def get_or_create_content_entry(tmdb_details, parsed_details):
+            # [FIXED] Add default category on creation
+            default_category = "Latest Movie" if parsed_details.get('type') == 'movie' else "Latest Series"
+
             if tmdb_details and tmdb_details.get("tmdb_id"):
                 print(f"INFO: TMDb data found for '{tmdb_details['title']}'. Processing with full details.")
                 tmdb_id = tmdb_details.get("tmdb_id")
@@ -1672,7 +1678,8 @@ def telegram_webhook():
                 if not existing_entry:
                     base_doc = {
                         **tmdb_details, "type": "movie" if parsed_details['type'] == 'movie' else "series",
-                        "languages": [], "episodes": [], "season_packs": [], "files": [], "categories": [],
+                        "languages": [], "episodes": [], "season_packs": [], "files": [], 
+                        "categories": [default_category],
                         "is_coming_soon": False, "streaming_links": []
                     }
                     movies.insert_one(base_doc)
@@ -1682,9 +1689,8 @@ def telegram_webhook():
                 return existing_entry
             else:
                 print(f"WARNING: TMDb data not found for '{parsed_details['title']}'. Using/Creating a placeholder.")
-                # [FIXED] Flexible, case-insensitive title search to find existing manual entries
                 existing_entry = movies.find_one({
-                    "title": {"$regex": parsed_details['title'], "$options": "i"}, 
+                    "title": {"$regex": f"^{re.escape(parsed_details['title'])}$", "$options": "i"}, 
                     "tmdb_id": None
                 })
                 if not existing_entry:
@@ -1692,7 +1698,8 @@ def telegram_webhook():
                         "title": parsed_details['title'], "type": "movie" if parsed_details['type'] == 'movie' else "series",
                         "poster": PLACEHOLDER_POSTER, "overview": "Details will be updated soon.",
                         "release_date": None, "genres": [], "vote_average": 0, "trailer_link": None, "tmdb_id": None,
-                        "languages": [], "episodes": [], "season_packs": [], "files": [], "categories": [],
+                        "languages": [], "episodes": [], "season_packs": [], "files": [], 
+                        "categories": [default_category],
                         "is_coming_soon": False, "streaming_links": []
                     }
                     movies.insert_one(shell_doc)
@@ -1787,6 +1794,7 @@ def telegram_webhook():
                         
                         if res.get('ok'):
                             new_msg_id = res['result']['message_id']
+                            # Note: This scheduler may not work reliably on serverless platforms like Vercel
                             scheduler.add_job(func=delete_message_after_delay, trigger='date', run_date=datetime.now() + timedelta(minutes=30), args=[chat_id, new_msg_id], id=f'del_{chat_id}_{new_msg_id}', replace_existing=True)
                         else: 
                             requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': "Error sending file. It might have been deleted from the channel."})
