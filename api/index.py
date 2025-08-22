@@ -21,7 +21,7 @@ ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Moviezonebd")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Moviezonebd")
 
 # [MODIFIED] Centralized website name
-WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "PmwBD") 
+WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "MovieZoneBD") 
 
 MAIN_CHANNEL_LINK = os.environ.get("MAIN_CHANNEL_LINK", "https://t.me/+60goZWp-FpkxNzVl")
 UPDATE_CHANNEL_LINK = os.environ.get("UPDATE_CHANNEL_LINK", "https://t.me/AllBotUpdatemy")
