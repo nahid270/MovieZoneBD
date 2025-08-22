@@ -15,10 +15,10 @@ from urllib.parse import urlparse, unquote
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://nevirol200:nevirol200@cluster0.ujkiiu6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "7355493923:AAFFicRnm9V2-cDlUmS90K40UH_PKeR_5ss")
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "7dc544d9253bccc3cfecc1c677f69819")
-ADMIN_CHANNEL_ID = int(os.environ.get("ADMIN_CHANNEL_ID", -1002620730046))
+ADMIN_CHANNEL_ID = int(os.environ.get("ADMIN_CHANNEL_ID", -1003012555805))
 BOT_USERNAME = os.environ.get("BOT_USERNAME", "AutoPostToolsBot")
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Mlwbd270")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Mlwbd270")
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Moviezonebd")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Moviezonebd")
 
 MAIN_CHANNEL_LINK = os.environ.get("MAIN_CHANNEL_LINK", "https://t.me/+60goZWp-FpkxNzVl")
 UPDATE_CHANNEL_LINK = os.environ.get("UPDATE_CHANNEL_LINK", "https://t.me/AllBotUpdatemy")
