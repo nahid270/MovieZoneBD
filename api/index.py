@@ -1351,25 +1351,29 @@ def process_movie_list(movie_list):
 
 @app.route('/')
 def home():
-    query = request.args.get('q', '').strip()
-    if query:
-        movies_list = list(movies.find({"title": {"$regex": query, "$options": "i"}}).sort('_id', -1))
-        return render_template_string(index_html, movies=process_movie_list(movies_list), query=f'Results for "{query}"', is_full_page_list=True)
-    
-    limit = 12
-    context = {
-        "trending_movies": process_movie_list(list(movies.find({"categories": "Trending", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
-        "latest_movies": process_movie_list(list(movies.find({"categories": "Latest Movie", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
-        "latest_series": process_movie_list(list(movies.find({"categories": "Latest Series", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
-        "hindi_movies": process_movie_list(list(movies.find({"categories": "Hindi", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
-        "bengali_movies": process_movie_list(list(movies.find({"categories": "Bengali", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
-        "english_movies": process_movie_list(list(movies.find({"categories": "English", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
-        "coming_soon_movies": process_movie_list(list(movies.find({"is_coming_soon": True}).sort('_id', -1).limit(limit))),
-        "recently_added": process_movie_list(list(movies.find({"is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(6))),
-        "is_full_page_list": False, 
-        "query": ""
-    }
-    return render_template_string(index_html, **context)
+    try:
+        query = request.args.get('q', '').strip()
+        if query:
+            movies_list = list(movies.find({"title": {"$regex": query, "$options": "i"}}).sort('_id', -1))
+            return render_template_string(index_html, movies=process_movie_list(movies_list), query=f'Results for "{query}"', is_full_page_list=True)
+        
+        limit = 12
+        context = {
+            "trending_movies": process_movie_list(list(movies.find({"categories": "Trending", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
+            "latest_movies": process_movie_list(list(movies.find({"categories": "Latest Movie", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
+            "latest_series": process_movie_list(list(movies.find({"categories": "Latest Series", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
+            "hindi_movies": process_movie_list(list(movies.find({"categories": "Hindi", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
+            "bengali_movies": process_movie_list(list(movies.find({"categories": "Bengali", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
+            "english_movies": process_movie_list(list(movies.find({"categories": "English", "is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(limit))),
+            "coming_soon_movies": process_movie_list(list(movies.find({"is_coming_soon": True}).sort('_id', -1).limit(limit))),
+            "recently_added": process_movie_list(list(movies.find({"is_coming_soon": {"$ne": True}}).sort('_id', -1).limit(6))),
+            "is_full_page_list": False, 
+            "query": ""
+        }
+        return render_template_string(index_html, **context)
+    except Exception as e:
+        print(f"FATAL ERROR on home page: {e}")
+        return "<h1>Something went wrong. Please try again later.</h1> <p>Error details have been logged.</p>", 500
 
 @app.route('/movie/<movie_id>')
 def movie_detail(movie_id):
@@ -1721,14 +1725,34 @@ def telegram_webhook():
         message = data['message']
         chat_id = message['chat']['id']
         text = message.get('text', '')
+
+        # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
+        print("\n--- [DEBUG] INCOMING MESSAGE ---")
+        print(f"CHAT ID: {chat_id}")
+        print(f"MESSAGE TEXT: {text}")
+        # --- [DEBUG] কোড শেষ ---
+
         if text.startswith('/start'):
             parts = text.split()
             if len(parts) > 1:
                 try:
                     payload_parts = parts[1].split('_')
                     doc_id_str = payload_parts[0]
+                    
+                    # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
+                    print(f"[DEBUG] Payload Parts: {payload_parts}")
+                    print(f"[DEBUG] Document ID String: {doc_id_str}")
+                    # --- [DEBUG] কোড শেষ ---
+                    
                     content = movies.find_one({"_id": ObjectId(doc_id_str)})
-                    if not content: return jsonify(status='ok')
+                    
+                    # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
+                    if not content:
+                        print(f"[DEBUG] ERROR: Content not found in DB for ID: {doc_id_str}")
+                        requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': f"Error: Could not find content with ID {doc_id_str}."})
+                        return jsonify(status='ok')
+                    print(f"[DEBUG] Found content in DB: {content.get('title')}")
+                    # --- [DEBUG] কোড শেষ ---
 
                     message_to_copy_id = None
                     file_info_text = ""
@@ -1755,6 +1779,10 @@ def telegram_webhook():
                             message_to_copy_id = file.get('message_id')
                             file_info_text = f"({quality})"
                     
+                    # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
+                    print(f"[DEBUG] Final message_id to copy: {message_to_copy_id}")
+                    # --- [DEBUG] কোড শেষ ---
+
                     if message_to_copy_id:
                         caption_text = (
                             f"🎬 *{escape_markdown(content['title'])}* {escape_markdown(file_info_text)}\n\n"
@@ -1764,7 +1792,12 @@ def telegram_webhook():
                             f"💬 For Any Help or Request\n➡️ [Contact Developer]({DEVELOPER_USER_LINK})"
                         )
                         payload = {'chat_id': chat_id, 'from_chat_id': ADMIN_CHANNEL_ID, 'message_id': message_to_copy_id, 'caption': caption_text, 'parse_mode': 'MarkdownV2'}
-                        res = requests.post(f"{TELEGRAM_API_URL}/copyMessage", json=payload).json()
+                        response = requests.post(f"{TELEGRAM_API_URL}/copyMessage", json=payload)
+                        res = response.json()
+                        
+                        # --- [DEBUG] কোড এখানে যুক্ত করা হয়েছে ---
+                        print(f"[DEBUG] Telegram API Response for copyMessage: {res}")
+                        # --- [DEBUG] কোড শেষ ---
                         
                         if res.get('ok'):
                             new_msg_id = res['result']['message_id']
