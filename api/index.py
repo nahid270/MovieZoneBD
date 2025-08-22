@@ -1811,4 +1811,3 @@ def send_manual_notification(movie_id):
         print(f"ERROR in send_manual_notification for ID {movie_id}: {e}")
         
     return redirect(url_for('admin'))
- 
