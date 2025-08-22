@@ -14,9 +14,9 @@ from urllib.parse import urlparse, unquote
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://tocewe6727:tocewe6727@cluster0.q4o59lo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "7355493923:AAFFicRnm9V2-cDlUmS90K40UH_PKeR_5ss")
-TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "7dc544d9253bccc3cfecc1c677f69819")
+TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "7880675542:AAHY83itDOUhASDXgaZRodMg5IhGI_dtfEA")
 ADMIN_CHANNEL_ID = int(os.environ.get("ADMIN_CHANNEL_ID", -1003012555805))
-BOT_USERNAME = os.environ.get("BOT_USERNAME", "AutoPostToolsBot")
+BOT_USERNAME = os.environ.get("BOT_USERNAME", "MovieZoneBDbot")
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Moviezonebd")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Moviezonebd")
 
