@@ -12,7 +12,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from urllib.parse import urlparse, unquote
 
 
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://tocewe6727:tocewe6727@cluster0.q4o59lo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://username:password@cluster0.mongodb.net/mydb")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "7880675542:AAHY83itDOUhASDXgaZRodMg5IhGI_dtfEA")
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "7dc544d9253bccc3cfecc1c677f69819")
 ADMIN_CHANNEL_ID = int(os.environ.get("ADMIN_CHANNEL_ID", -1003012555805))
@@ -25,9 +25,6 @@ UPDATE_CHANNEL_LINK = os.environ.get("UPDATE_CHANNEL_LINK", "https://t.me/AllBot
 DEVELOPER_USER_LINK = os.environ.get("DEVELOPER_USER_LINK", "https://t.me/Ctgmovies23")
 
 NOTIFICATION_CHANNEL_ID = int(os.environ.get("NOTIFICATION_CHANNEL_ID", -1002896064142))
-
-# --- [NEW] Website Name Configuration ---
-WEBSITE_NAME = "MovieZoneBD"  # Change your website name here
 
 # --- Validate that all required environment variables are set ---
 required_vars = {
@@ -92,8 +89,7 @@ def inject_globals():
     return dict(
         ad_settings=(ad_codes or {}),
         bot_username=BOT_USERNAME,
-        main_channel_link=MAIN_CHANNEL_LINK,
-        website_name=WEBSITE_NAME  # Make website name available to all templates
+        main_channel_link=MAIN_CHANNEL_LINK
     )
 
 
@@ -199,7 +195,7 @@ index_html = """
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>{{ website_name }} - Your Entertainment Hub</title>
+<title>PmwBD - Your Entertainment Hub</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
   :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; --nav-height: 60px; }
@@ -304,7 +300,7 @@ index_html = """
     <div class="nav-left">
         <div class="menu-toggle"><i class="fas fa-bars"></i></div>
     </div>
-    <a href="{{ url_for('home') }}" class="logo">{{ website_name }}</a>
+    <a href="{{ url_for('home') }}" class="logo">PmwBD</a>
     <div class="nav-right">
         <div class="search-container">
             <form method="GET" action="/" class="search-form">
@@ -421,7 +417,7 @@ index_html = """
 </nav>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
 </footer>
 <script>
     const nav = document.querySelector('.main-nav');
@@ -459,7 +455,7 @@ detail_html = """
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>{{ movie.title if movie else "Content Not Found" }} - {{ website_name }}</title>
+<title>{{ movie.title if movie else "Content Not Found" }} - PmwBD</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
   :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
@@ -646,7 +642,7 @@ detail_html = """
 
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
 </footer>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
@@ -656,7 +652,7 @@ detail_html = """
             
 genres_html = """
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /><title>{{ title }} - {{ website_name }}</title>
+<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /><title>{{ title }} - MovieZone</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
   :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; }
@@ -679,7 +675,7 @@ genres_html = """
 <div class="genre-grid">{% for genre in genres %}<a href="{{ url_for('movies_by_genre', genre_name=genre) }}" class="genre-card"><span>{{ genre }}</span></a>{% endfor %}</div></div>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
 </footer>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
@@ -701,7 +697,7 @@ watch_html = """
     <iframe src="{{ watch_link }}" allowfullscreen allowtransparency allow="autoplay" scrolling="no" frameborder="0"></iframe>
     <!-- [NEW] Footer -->
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
     </footer>
 </div>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
@@ -714,7 +710,7 @@ admin_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - {{ website_name }}</title>
+    <title>Admin Panel - MovieZone</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <style>
@@ -949,7 +945,7 @@ edit_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Content - {{ website_name }}</title>
+    <title>Edit Content - MovieZone</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <style>
@@ -1082,7 +1078,7 @@ contact_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us / Report - {{ website_name }}</title>
+    <title>Contact Us / Report - MovieZone</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --netflix-red: #E50914; --netflix-black: #141414; --dark-gray: #222; --light-gray: #333; --text-light: #f5f5f5; }
@@ -1119,7 +1115,7 @@ contact_html = """
 </div>
 <!-- [NEW] Footer -->
 <footer class="main-footer">
-    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+    <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
 </footer>
 </body>
 </html>
@@ -1132,7 +1128,7 @@ disclaimer_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disclaimer - {{ website_name }}</title>
+    <title>Disclaimer - PmwBD</title>
     <style>
         :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
         body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
@@ -1150,14 +1146,14 @@ disclaimer_html = """
 <body>
     <div class="container">
         <h1>Disclaimer</h1>
-        <p><strong>{{ website_name }}</strong> does not host, store, or upload any video, films, or media files. Our site does not own any of the content displayed. We are not responsible for the accuracy, compliance, copyright, legality, decency, or any other aspect of the content of other linked sites.</p>
+        <p><strong>PmwBD.com</strong> does not host, store, or upload any video, films, or media files. Our site does not own any of the content displayed. We are not responsible for the accuracy, compliance, copyright, legality, decency, or any other aspect of the content of other linked sites.</p>
         <p>The content available on this website is collected from various publicly available sources on the internet. We act as a search engine that indexes and displays hyperlinks to content that is freely available online. We do not exercise any control over the content of these external websites.</p>
         <p>All content is the copyright of their respective owners. We encourage all copyright owners to recognize that the links contained within this site are located elsewhere on the web. The embedded links are from other sites such as (but not limited to) YouTube, Dailymotion, Google Drive, etc. If you have any legal issues please contact the appropriate media file owners or host sites.</p>
         <p>If you believe that any content on our website infringes upon your copyright, please visit our <a href="{{ url_for('dmca') }}">DMCA page</a> for instructions on how to submit a takedown request.</p>
         <a href="{{ url_for('home') }}" class="back-link">&larr; Back to Home</a>
     </div>
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
     </footer>
 </body>
 </html>
@@ -1170,7 +1166,7 @@ dmca_html = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DMCA Policy - {{ website_name }}</title>
+    <title>DMCA Policy - PmwBD</title>
     <style>
         :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
         body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
@@ -1189,7 +1185,7 @@ dmca_html = """
 <body>
     <div class="container">
         <h1>DMCA Copyright Infringement Notification</h1>
-        <p>{{ website_name }} respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond promptly to notices of alleged copyright infringement.</p>
+        <p>PmwBD.com respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond promptly to notices of alleged copyright infringement.</p>
         <p>As stated in our disclaimer, this website does not host any files on its servers. All content is provided by non-affiliated third parties from publicly available sources.</p>
         
         <h2>Procedure for Reporting Copyright Infringement:</h2>
@@ -1211,7 +1207,7 @@ dmca_html = """
         <a href="{{ url_for('home') }}" class="back-link">&larr; Back to Home</a>
     </div>
     <footer class="main-footer">
-        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name|upper }}</a>
+        <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED PMWBD</a>
     </footer>
 </body>
 </html>
@@ -1638,7 +1634,7 @@ def telegram_webhook():
     data = request.get_json()
     if 'channel_post' in data:
         post = data['channel_post']
-        if str(post.get('chat', {}).get('id')) != str(ADMIN_CHANNEL_ID): 
+        if str(post.get('chat', {}).get('id')) != ADMIN_CHANNEL_ID: 
             return jsonify(status='ok', reason='not_admin_channel')
         
         file = post.get('video') or post.get('document')
