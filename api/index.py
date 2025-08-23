@@ -336,8 +336,8 @@ index_html = """
 <div class="overlay"></div>
 <nav class="drawer-menu">
     <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('movies_by_category', cat_name='Latest Movie') }}">Movies</a>
-    <a href="{{ url_for('movies_by_category', cat_name='Latest Series') }}">Web Series</a>
+    <a href="{{ url_for('all_movies') }}">Movies</a>
+    <a href="{{ url_for('all_series') }}">Web Series</a>
     <a href="{{ url_for('genres_page') }}">Genres</a>
     <a href="{{ url_for('contact') }}">Request/Contact</a>
     <a href="{{ url_for('disclaimer') }}">Disclaimer</a>
@@ -424,10 +424,10 @@ index_html = """
     <a href="{{ url_for('home') }}" class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">
         <i class="fas fa-home"></i><span>Home</span>
     </a>
-    <a href="{{ url_for('movies_by_category', cat_name='Latest Movie') }}" class="nav-item">
+    <a href="{{ url_for('all_movies') }}" class="nav-item">
         <i class="fas fa-film"></i><span>Movies</span>
     </a>
-    <a href="{{ url_for('movies_by_category', cat_name='Latest Series') }}" class="nav-item">
+    <a href="{{ url_for('all_series') }}" class="nav-item">
         <i class="fas fa-tv"></i><span>Series</span>
     </a>
     <a href="{{ url_for('genres_page') }}" class="nav-item {% if request.endpoint == 'genres_page' %}active{% endif %}">
@@ -1434,6 +1434,16 @@ def movies_by_category(cat_name):
 
 @app.route('/coming_soon')
 def coming_soon(): return render_full_list(list(movies.find({"is_coming_soon": True}).sort('_id', -1)), "Coming Soon")
+
+@app.route('/all-movies')
+def all_movies():
+    all_movie_list = list(movies.find({"type": "movie", "is_coming_soon": {"$ne": True}}).sort('_id', -1))
+    return render_full_list(all_movie_list, "All Movies")
+
+@app.route('/all-series')
+def all_series():
+    all_series_list = list(movies.find({"type": "series", "is_coming_soon": {"$ne": True}}).sort('_id', -1))
+    return render_full_list(all_series_list, "All Web Series")
 
 @app.route('/disclaimer')
 def disclaimer():
