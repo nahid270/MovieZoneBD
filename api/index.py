@@ -205,11 +205,33 @@ index_html = """
   ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #222; } ::-webkit-scrollbar-thumb { background: #555; } ::-webkit-scrollbar-thumb:hover { background: var(--netflix-red); }
   
   /* [MODIFIED] Main Nav for Centered Logo & Menu */
-  .main-nav { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: background-color: 0.3s ease; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 10%, rgba(0,0,0,0)); }
-  .main-nav.scrolled { background-color: var(--netflix-black); }
+  .main-nav { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: background-color 0.3s ease, padding 0.3s ease; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 10%, rgba(0,0,0,0)); }
+  .main-nav.scrolled { background-color: var(--netflix-black); padding: 5px 20px; }
   .nav-left, .nav-right { display: flex; align-items: center; flex: 1; }
   .nav-right { justify-content: flex-end; }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--netflix-red); font-weight: 700; letter-spacing: 1px; margin: 0 auto; }
+  
+  /* [UPDATED] New stylish logo */
+  .logo { 
+    font-family: 'Bebas Neue', sans-serif; 
+    font-size: 36px; /* সাইজ কিছুটা বড় করা হয়েছে */
+    color: var(--netflix-red); 
+    font-weight: 700; 
+    letter-spacing: 2px; /* অক্ষরের মধ্যে দূরত্ব বাড়ানো হয়েছে */
+    margin: 0 auto; 
+    text-transform: uppercase; /* লেখাকে বড় হাতের অক্ষরে দেখাবে */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* লেখার পিছনে একটি হালকা ছায়া যোগ করবে */
+    transition: all 0.3s ease-in-out; /* ইফেক্টগুলো মসৃণভাবে দেখানোর জন্য */
+    padding: 0 10px; /* ডানে-বামে একটু জায়গা যোগ করা হয়েছে */
+  }
+  .logo:hover {
+    transform: scale(1.05); /* মাউস রাখলে হালকা বড় হবে */
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7); /* হোভার করলে শ্যাডো আরও স্পষ্ট হবে */
+  }
+  .main-nav.scrolled .logo {
+    font-size: 28px; /* স্ক্রোল করলে লোগোটি ছোট হয়ে যাবে */
+    text-shadow: none; /* কালো ব্যাকগ্রাউন্ডের উপর শ্যাডোর দরকার নেই */
+  }
+
   .menu-toggle { font-size: 24px; cursor: pointer; color: var(--text-light); z-index: 1002;}
   
   /* [NEW] Drawer Menu */
