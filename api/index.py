@@ -238,15 +238,18 @@ index_html = """
   .search-results .result-info h5 { margin: 0; font-size: 0.9rem; }
   .search-results .result-info p { margin: 0; font-size: 0.8rem; color: var(--text-dark); }
   
-  .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; aspect-ratio: 16 / 8; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  /* --- [CORRECTED & FINAL] Hero Slider CSS --- */
+  .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; min-height: 60vh; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  .hero-swiper { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
   .hero-swiper .swiper-slide { position: relative; background-size: cover; background-position: center; display: flex; align-items: flex-end; color: white; text-decoration: none; }
-  .hero-swiper .swiper-slide::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%); z-index: 1; }
-  .hero-slide-content { position: relative; z-index: 2; padding: 20px; width: 100%; }
-  .hero-slide-title { font-size: 2rem; font-weight: 700; margin: 0 0 5px 0; }
+  .hero-swiper .swiper-slide::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, transparent 100%); z-index: 1; }
+  .hero-slide-content { position: relative; z-index: 2; padding: 30px; width: 100%; }
+  .hero-slide-title { font-size: 2.5rem; font-weight: 700; margin: 0 0 8px 0; }
   .hero-slide-meta { font-size: 1rem; color: #ccc; display: flex; align-items: center; gap: 15px; }
-  .hero-slide-badge { background-color: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); padding: 3px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
-  .hero-swiper .swiper-pagination-bullet { background-color: rgba(255, 255, 255, 0.5); width: 10px; height: 10px; opacity: 1; }
+  .hero-slide-badge { background-color: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); padding: 4px 12px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; }
+  .hero-swiper .swiper-pagination-bullet { background-color: rgba(255, 255, 255, 0.5); width: 10px; height: 10px; opacity: 1; transition: all 0.3s ease; }
   .hero-swiper .swiper-pagination-bullet-active { background-color: var(--netflix-red); transform: scale(1.2); }
+  
   main { padding: 0 50px; }
 
   .category-buttons { padding: 20px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
@@ -312,8 +315,8 @@ index_html = """
   @media (max-width: 768px) {
       body { padding-bottom: var(--nav-height); } .main-nav { padding: 10px 15px; } main { padding: 0 15px; } .logo { font-size: 24px; }
       .search-container { flex: 2; text-align: right; } .search-input { width: 150px; }
-      .hero-slider-container { aspect-ratio: 16 / 9; border-radius: 0; margin: var(--nav-height) -15px 20px -15px; }
-      .hero-slide-title { font-size: 1.5rem; } .hero-slide-meta { font-size: 0.9rem; }
+      .hero-slider-container { min-height: 50vh; border-radius: 0; margin: var(--nav-height) -15px 20px -15px; }
+      .hero-slide-title { font-size: 1.8rem; } .hero-slide-meta { font-size: 0.9rem; }
       .category-section { margin: 25px 0; } .category-title { font-size: 1.2rem; }
       .full-page-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px 10px; }
       .full-page-grid-container { padding-top: 80px; } .full-page-grid-title { font-size: 1.8rem; }
@@ -1600,9 +1603,7 @@ def admin():
             tmdb_details = get_tmdb_details_from_title(movie_data['title'], movie_data['type'])
             if tmdb_details:
                 final_data = tmdb_details.copy()
-                # Update final_data with form data only if form fields are filled
                 for key, value in movie_data.items():
-                    # Check if the value from the form is not empty or an empty list
                     if (value is not None and value != '' and value != []):
                         final_data[key] = value
                 movie_data = final_data
