@@ -188,7 +188,9 @@ def send_notification_to_channel(movie_data):
     except Exception as e:
         print(f"FATAL ERROR in send_notification_to_channel: {e}")
 
-
+# =========================================================================================
+# === [START] UPDATED index_html TEMPLATE =================================================
+# =========================================================================================
 index_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -551,7 +553,7 @@ index_html = """
                 return;
             }
             debounceTimer = setTimeout(() => {
-                fetch(`/api/search?q=${query}`) // আপনার API এন্ডপয়েন্ট এখানে দিন
+                fetch(`/api/search?q=${encodeURIComponent(query)}`) // আপনার API এন্ডপয়েন্ট এখানে দিন
                     .then(response => response.json())
                     .then(data => {
                         searchResults.innerHTML = '';
@@ -578,7 +580,7 @@ index_html = """
         });
         // Hide results if clicked outside
         document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target)) {
+            if (e.target !== searchInput) {
                 searchResults.style.display = 'none';
             }
         });
@@ -588,8 +590,13 @@ index_html = """
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
 </body>
 </html>
- 
-  """<!DOCTYPE html>
+"""
+# =======================================================================================
+# === [END] UPDATED index_html TEMPLATE =================================================
+# =======================================================================================
+
+detail_html = """
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -1569,6 +1576,31 @@ def disclaimer():
 @app.route('/dmca')
 def dmca():
     return render_template_string(dmca_html)
+
+# === [START] NEW API ROUTE FOR LIVE SEARCH ========================================
+# এই রুটটি নতুন index_html এর লাইভ সার্চ ফিচারটিকে সাপোর্ট করার জন্য যোগ করা হয়েছে।
+@app.route('/api/search')
+def api_search():
+    query = request.args.get('q', '').strip()
+    if len(query) < 3:
+        return jsonify([])
+    
+    try:
+        # Search the database for titles matching the query, limit to 10 results
+        results = list(movies.find(
+            {"title": {"$regex": query, "$options": "i"}},
+            {"_id": 1, "title": 1, "poster": 1, "release_date": 1} # Only fetch necessary fields
+        ).limit(10))
+        
+        # Convert ObjectId to string for JSON serialization
+        for item in results:
+            item['_id'] = str(item['_id'])
+            
+        return jsonify(results)
+    except Exception as e:
+        print(f"API Search Error: {e}")
+        return jsonify({"error": "An error occurred during search"}), 500
+# === [END] NEW API ROUTE FOR LIVE SEARCH ==========================================
 
 
 @app.route('/admin', methods=["GET", "POST"])
