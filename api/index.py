@@ -199,7 +199,6 @@ index_html = """
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>{{ website_name }} - Your Entertainment Hub</title>
-<!-- [NEW] Swiper.js CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 <style>
@@ -232,7 +231,6 @@ index_html = """
   .search-input { background-color: rgba(0,0,0,0.7); border: 1px solid #777; color: var(--text-light); padding: 8px 15px; border-radius: 4px; transition: width 0.3s ease, background-color: 0.3s ease; width: 250px; }
   .search-input:focus { background-color: rgba(0,0,0,0.9); border-color: var(--text-light); outline: none; }
   
-  /* [NEW] Live Search Dropdown */
   .search-results { position: absolute; top: 110%; right: 0; width: 300px; background-color: #181818; border-radius: 4px; max-height: 400px; overflow-y: auto; z-index: 1100; display: none; }
   .search-results a { display: flex; align-items: center; padding: 10px; text-decoration: none; color: var(--text-light); border-bottom: 1px solid #282828; }
   .search-results a:hover { background-color: #222; }
@@ -240,7 +238,6 @@ index_html = """
   .search-results .result-info h5 { margin: 0; font-size: 0.9rem; }
   .search-results .result-info p { margin: 0; font-size: 0.8rem; color: var(--text-dark); }
   
-  /* --- [NEW] Moviedokan Style Hero Slider --- */
   .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; aspect-ratio: 16 / 8; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
   .hero-swiper .swiper-slide { position: relative; background-size: cover; background-position: center; display: flex; align-items: flex-end; color: white; text-decoration: none; }
   .hero-swiper .swiper-slide::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%); z-index: 1; }
@@ -252,12 +249,10 @@ index_html = """
   .hero-swiper .swiper-pagination-bullet-active { background-color: var(--netflix-red); transform: scale(1.2); }
   main { padding: 0 50px; }
 
-  /* [MODIFIED] Category Buttons with better hover */
   .category-buttons { padding: 20px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
   .cat-btn { padding: 10px 25px; background-color: #222; border: 1px solid #444; color: var(--text-light); border-radius: 20px; font-size: 1rem; font-weight: 500; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
   .cat-btn:hover { background-color: var(--netflix-red); border-color: var(--netflix-red); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4); }
 
-  /* --- [MODIFIED & NEW] Movie Card Styles --- */
   .movie-card { display: block; cursor: pointer; border-radius: 6px; overflow: hidden; position: relative; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
   .poster-wrapper { position: relative; width: 100%; border-radius: 6px; overflow: hidden; background-color: #222; display: flex; flex-direction: column; }
   .movie-poster-container { position: relative; overflow: hidden; width:100%; flex-grow:1; aspect-ratio: 2 / 3; }
@@ -279,7 +274,6 @@ index_html = """
   .card-info-title { font-size: 0.9rem; font-weight: 500; color: var(--text-light); margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-info-meta { font-size: 0.75rem; color: var(--text-dark); margin: 0; }
 
-  /* [NEW] Enhanced Card Hover Effect */
   .card-hover-info { position: absolute; bottom: 50px; left: 0; width: 100%; padding: 15px 10px; background: linear-gradient(to top, #1a1a1a 70%, transparent); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease-in-out; }
   .hover-buttons { display: flex; gap: 10px; margin-bottom: 10px; }
   .play-btn, .action-btn { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(40,40,40,0.8); border: 1px solid white; color: white; cursor: pointer; }
@@ -298,12 +292,10 @@ index_html = """
   .category-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 1.6rem; margin: 0; }
   .see-all-link { color: var(--text-dark); font-weight: 700; font-size: 0.9rem; }
   
-  /* [NEW] Swiper.js Carousel Styles */
-  .category-slider { overflow: visible; /* To allow scaled-up cards to show */ }
+  .category-slider { overflow: visible; }
   .swiper-button-next, .swiper-button-prev { color: var(--text-light); background-color: rgba(20, 20, 20, 0.5); border-radius: 50%; width: 40px; height: 40px; }
   .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px; font-weight: bold; }
   
-  /* Other sections */
   .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background-color: #181818; border-top: 1px solid #282828; justify-content: space-around; align-items: center; z-index: 200; }
   .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-dark); font-size: 10px; flex-grow: 1; padding: 5px 0; transition: color 0.2s ease; }
   .nav-item i { font-size: 20px; margin-bottom: 4px; } .nav-item.active { color: var(--text-light); } .nav-item.active i { color: var(--netflix-red); }
@@ -316,11 +308,11 @@ index_html = """
   .main-footer { padding: 20px 50px; text-align: center; background-color: #181818; color: var(--text-dark); font-size: 0.9rem; }
   .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
   
-  @media (max-width: 992px) { /* Tablet and below */ .swiper-button-next, .swiper-button-prev { display: none; } }
+  @media (max-width: 992px) { .swiper-button-next, .swiper-button-prev { display: none; } }
   @media (max-width: 768px) {
       body { padding-bottom: var(--nav-height); } .main-nav { padding: 10px 15px; } main { padding: 0 15px; } .logo { font-size: 24px; }
       .search-container { flex: 2; text-align: right; } .search-input { width: 150px; }
-      .hero-slider-container { aspect-ratio: 16 / 9; border-radius: 0; margin: 0 -15px 20px -15px; }
+      .hero-slider-container { aspect-ratio: 16 / 9; border-radius: 0; margin: var(--nav-height) -15px 20px -15px; }
       .hero-slide-title { font-size: 1.5rem; } .hero-slide-meta { font-size: 0.9rem; }
       .category-section { margin: 25px 0; } .category-title { font-size: 1.2rem; }
       .full-page-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px 10px; }
@@ -344,7 +336,6 @@ index_html = """
             <form method="GET" action="/" class="search-form">
                 <input type="search" name="q" id="searchInput" class="search-input" placeholder="Search..." value="{{ query|default('') }}" autocomplete="off" />
             </form>
-            <!-- [NEW] Live search results container -->
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
@@ -362,7 +353,6 @@ index_html = """
 </nav>
 
 <main>
-  <!-- [MODIFIED] Movie Card Macro with hover effect -->
   {% macro render_movie_card(m) %}
     <a href="{{ url_for('movie_detail', movie_id=m._id) }}" class="movie-card">
       <div class="poster-wrapper">
@@ -371,7 +361,6 @@ index_html = """
            {% if m.poster_badge %}<div class="poster-badge">{{ m.poster_badge }}</div>{% endif %}
            {% if m.vote_average and m.vote_average > 0 %}<div class="rating-badge"><i class="fas fa-star"></i> {{ "%.1f"|format(m.vote_average) }}</div>{% endif %}
         </div>
-        <!-- [NEW] Hidden info for hover effect -->
         <div class="card-hover-info">
             <div class="hover-buttons">
                 <span class="play-btn"><i class="fas fa-play"></i></span>
@@ -408,14 +397,14 @@ index_html = """
         {% endif %}
     </div>
   {% else %}
-    <!-- [NEW] Moviedokan Style Hero Slider -->
+    <!-- [CORRECTED & FINAL] Moviedokan Style Hero Slider -->
     {% if recently_added %}
     <div class="hero-slider-container">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
                 {% for m in recently_added %}
-                    {% if m.backdrop %}
-                    <a href="{{ url_for('movie_detail', movie_id=m._id) }}" class="swiper-slide" style="background-image: url('{{ m.backdrop }}');">
+                    {% if m.backdrop or m.poster %}
+                    <a href="{{ url_for('movie_detail', movie_id=m._id) }}" class="swiper-slide" style="background-image: url('{{ m.backdrop or m.poster }}');">
                         <div class="hero-slide-content">
                             <h2 class="hero-slide-title">{{ m.title }}</h2>
                             <div class="hero-slide-meta">
@@ -437,8 +426,7 @@ index_html = """
         </div>
     </div>
     {% endif %}
-
-    <!-- Category buttons -->
+    
     <div class="category-buttons">
         <a href="{{ url_for('movies_by_category', cat_name='Hindi') }}" class="cat-btn">Hindi</a>
         <a href="{{ url_for('movies_by_category', cat_name='Bengali') }}" class="cat-btn">Bengali</a>
@@ -446,7 +434,6 @@ index_html = """
         <a href="{{ url_for('movies_by_category', cat_name='English') }}" class="cat-btn">English & Hollywood</a>
     </div>
 
-    <!-- [MODIFIED] Grid Section Macro with Swiper.js carousel -->
     {% macro render_grid_section(title, movies_list, endpoint, cat_name) %}
         {% if movies_list %}
         <div class="category-section">
@@ -454,7 +441,6 @@ index_html = """
                 <h2 class="category-title">{{ title }}</h2>
                 <a href="{{ url_for(endpoint, cat_name=cat_name) }}" class="see-all-link">See All ></a>
             </div>
-            <!-- Swiper Carousel Structure -->
             <div class="swiper category-slider">
                 <div class="swiper-wrapper">
                     {% for m in movies_list %}
@@ -470,7 +456,6 @@ index_html = """
         {% endif %}
     {% endmacro %}
     
-    <!-- Render all sections -->
     {{ render_grid_section('Trending Now', trending_movies, 'movies_by_category', 'Trending') }}
     {% if ad_settings.banner_ad_code %}<div class="ad-container">{{ ad_settings.banner_ad_code|safe }}</div>{% endif %}
     {{ render_grid_section('Latest Movies', latest_movies, 'movies_by_category', 'Latest Movie') }}
@@ -481,7 +466,6 @@ index_html = """
     {{ render_grid_section('English & Hollywood', english_movies, 'movies_by_category', 'English') }}
     {{ render_grid_section('Coming Soon', coming_soon_movies, 'coming_soon', '') }}
     
-    <!-- Telegram Section -->
     <div class="telegram-join-section">
         <i class="fa-brands fa-telegram telegram-icon"></i>
         <h2>Join Our Telegram Channel</h2>
@@ -511,52 +495,32 @@ index_html = """
     <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
 
-<!-- [NEW] Swiper.js Script -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 <script>
-    // Navbar scroll effect
     const nav = document.querySelector('.main-nav');
     window.addEventListener('scroll', () => { window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled'); });
 
     document.addEventListener('DOMContentLoaded', function() { 
-        // [NEW] Hero Swiper Initialization
         new Swiper('.hero-swiper', {
             loop: true,
-            autoplay: {
-                delay: 4000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
+            autoplay: { delay: 4000, disableOnInteraction: false },
+            pagination: { el: '.swiper-pagination', clickable: true },
             effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
+            fadeEffect: { crossFade: true },
         });
         
-        // Drawer Menu Logic
         const menuToggle = document.querySelector('.menu-toggle');
         const drawerMenu = document.querySelector('.drawer-menu');
         const overlay = document.querySelector('.overlay');
-        const toggleMenu = () => {
-            drawerMenu.classList.toggle('open');
-            overlay.classList.toggle('open');
-        };
+        const toggleMenu = () => { drawerMenu.classList.toggle('open'); overlay.classList.toggle('open'); };
         menuToggle.addEventListener('click', toggleMenu);
         overlay.addEventListener('click', toggleMenu);
 
-        // [NEW] Category Swiper.js Carousel Initialization
         const sliders = document.querySelectorAll('.category-slider');
         sliders.forEach(slider => {
             new Swiper(slider, {
-                slidesPerView: 2.2,
-                spaceBetween: 10,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
+                slidesPerView: 2.2, spaceBetween: 10,
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
                 breakpoints: {
                     576: { slidesPerView: 3, spaceBetween: 15 },
                     768: { slidesPerView: 4, spaceBetween: 15 },
@@ -566,50 +530,32 @@ index_html = """
             });
         });
 
-        // [NEW] Live Search Logic
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         let debounceTimer;
-
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value;
             clearTimeout(debounceTimer);
-            if (query.length < 3) {
-                searchResults.style.display = 'none';
-                return;
-            }
+            if (query.length < 3) { searchResults.style.display = 'none'; return; }
             debounceTimer = setTimeout(() => {
                 fetch(`/api/search?q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(data => {
                         searchResults.innerHTML = '';
                         if (data.length > 0) {
-                            data.slice(0, 5).forEach(item => { // Show max 5 results
+                            data.slice(0, 5).forEach(item => {
                                 const link = document.createElement('a');
                                 link.href = `/movie/${item._id}`;
-                                link.innerHTML = `
-                                    <img src="${item.poster || ''}" alt="${item.title}">
-                                    <div class="result-info">
-                                        <h5>${item.title}</h5>
-                                        <p>${item.release_date ? item.release_date.split('-')[0] : ''}</p>
-                                    </div>
-                                `;
+                                link.innerHTML = `<img src="${item.poster || ''}" alt="${item.title}"><div class="result-info"><h5>${item.title}</h5><p>${item.release_date ? item.release_date.split('-')[0] : ''}</p></div>`;
                                 searchResults.appendChild(link);
                             });
                             searchResults.style.display = 'block';
-                        } else {
-                            searchResults.style.display = 'none';
-                        }
+                        } else { searchResults.style.display = 'none'; }
                     })
                     .catch(error => console.error('Search error:', error));
-            }, 300); // 300ms delay
+            }, 300);
         });
-        // Hide results if clicked outside
-        document.addEventListener('click', (e) => {
-            if (e.target !== searchInput) {
-                searchResults.style.display = 'none';
-            }
-        });
+        document.addEventListener('click', (e) => { if (e.target !== searchInput) { searchResults.style.display = 'none'; } });
     });
 </script>
 {% if ad_settings.popunder_code %}{{ ad_settings.popunder_code|safe }}{% endif %}
@@ -954,7 +900,6 @@ admin_html = """
             <legend>Manual Method</legend>
             <div class="form-group"><label for="title">Title (Required):</label><input type="text" name="title" id="title" required /></div>
             <div class="form-group"><label for="poster">Poster URL:</label><input type="url" name="poster" id="poster" /></div>
-            <!-- [NEW] Backdrop field -->
             <div class="form-group"><label for="backdrop">Backdrop URL (Slider Image):</label><input type="url" name="backdrop" id="backdrop" /></div>
             <div class="form-group"><label for="overview">Overview:</label><textarea name="overview" id="overview"></textarea></div>
             <div class="form-group"><label for="genres">Genres (comma separated):</label><input type="text" name="genres" id="genres" /></div>
@@ -1149,7 +1094,6 @@ edit_html = """
         <legend>Core Details</legend>
         <div class="form-group"><label>Title:</label><input type="text" name="title" value="{{ movie.title }}" required /></div>
         <div class="form-group"><label>Poster URL:</label><input type="url" name="poster" value="{{ movie.poster or '' }}" /></div>
-        <!-- [NEW] Backdrop field -->
         <div class="form-group"><label>Backdrop URL (Slider Image):</label><input type="url" name="backdrop" value="{{ movie.backdrop or '' }}" /></div>
         <div class="form-group"><label>Overview:</label><textarea name="overview">{{ movie.overview or '' }}</textarea></div>
         <div class="form-group"><label>Genres (comma separated):</label><input type="text" name="genres" value="{{ movie.genres|join(', ') if movie.genres else '' }}" /></div>
@@ -1173,13 +1117,13 @@ edit_html = """
         <fieldset><legend>Movie Links</legend>
             <div class="form-group"><label>Watch Link (Main Embed):</label><input type="url" name="watch_link" value="{{ movie.watch_link or '' }}" /></div><hr>
             
-            {% set stream_link_1 = (movie.streaming_links | selectattr('name', 'equalto', '480p') | map(attribute='url') | first) or '' %}
-            {% set stream_link_2 = (movie.streaming_links | selectattr('name', 'equalto', '720p') | map(attribute='url') | first) or '' %}
-            {% set stream_link_3 = (movie.streaming_links | selectattr('name', 'equalto', '1080p') | map(attribute='url') | first) or '' %}
+            {% set stream_link_1 = (movie.streaming_links | selectattr('name', 'equalto', 'Server 1') | map(attribute='url') | first) or '' %}
+            {% set stream_link_2 = (movie.streaming_links | selectattr('name', 'equalto', 'Server 2') | map(attribute='url') | first) or '' %}
+            {% set stream_link_3 = (movie.streaming_links | selectattr('name', 'equalto', 'Server 3') | map(attribute='url') | first) or '' %}
             <p><b>Streaming Links (Optional)</b></p>
-            <div class="form-group"><label>Streaming Link 1 (480p):</label><input type="url" name="streaming_link_1" value="{{ stream_link_1 }}" /></div>
-            <div class="form-group"><label>Streaming Link 2 (720p):</label><input type="url" name="streaming_link_2" value="{{ stream_link_2 }}" /></div>
-            <div class="form-group"><label>Streaming Link 3 (1080p):</label><input type="url" name="streaming_link_3" value="{{ stream_link_3 }}" /></div><hr>
+            <div class="form-group"><label>Streaming Link 1 (Server 1):</label><input type="url" name="streaming_link_1" value="{{ stream_link_1 }}" /></div>
+            <div class="form-group"><label>Streaming Link 2 (Server 2):</label><input type="url" name="streaming_link_2" value="{{ stream_link_2 }}" /></div>
+            <div class="form-group"><label>Streaming Link 3 (Server 3):</label><input type="url" name="streaming_link_3" value="{{ stream_link_3 }}" /></div><hr>
             
             <p><b>Download Links (Manual)</b></p>
             <div class="form-group"><label>480p Link:</label><input type="url" name="link_480p" value="{% for l in movie.links %}{% if l.quality == '480p' %}{{ l.url }}{% endif %}{% endfor %}" /></div>
@@ -1485,7 +1429,6 @@ def get_tmdb_details_from_api(tmdb_id, content_type):
             "tmdb_id": tmdb_id, 
             "title": res_json.get("title") or res_json.get("name"), 
             "poster": f"https://image.tmdb.org/t/p/w500{res_json.get('poster_path')}" if res_json.get('poster_path') else None,
-            # [NEW] Fetch backdrop image for the slider
             "backdrop": f"https://image.tmdb.org/t/p/w1280{res_json.get('backdrop_path')}" if res_json.get('backdrop_path') else None,
             "overview": res_json.get("overview"), 
             "release_date": res_json.get("release_date") or res_json.get("first_air_date"), 
@@ -1656,11 +1599,12 @@ def admin():
         if not movie_data.get('tmdb_id'):
             tmdb_details = get_tmdb_details_from_title(movie_data['title'], movie_data['type'])
             if tmdb_details:
-                if movie_data['poster'] == PLACEHOLDER_POSTER and tmdb_details.get('poster'):
-                    movie_data['poster'] = tmdb_details['poster']
-                
                 final_data = tmdb_details.copy()
-                final_data.update(movie_data)
+                # Update final_data with form data only if form fields are filled
+                for key, value in movie_data.items():
+                    # Check if the value from the form is not empty or an empty list
+                    if (value is not None and value != '' and value != []):
+                        final_data[key] = value
                 movie_data = final_data
 
         if movie_data['type'] == "movie":
@@ -1668,9 +1612,9 @@ def admin():
             if watch_link: movie_data['watch_link'] = watch_link
 
             streaming_links = [
-                ("480p", request.form.get("streaming_link_1", "").strip()),
-                ("720p", request.form.get("streaming_link_2", "").strip()),
-                ("1080p", request.form.get("streaming_link_3", "").strip()),
+                ("Server 1", request.form.get("streaming_link_1", "").strip()),
+                ("Server 2", request.form.get("streaming_link_2", "").strip()),
+                ("Server 3", request.form.get("streaming_link_3", "").strip()),
             ]
             movie_data['streaming_links'] = [{"name": name, "url": url} for name, url in streaming_links if url]
 
@@ -1792,9 +1736,9 @@ def edit_movie(movie_id):
             update_data["watch_link"] = request.form.get("watch_link", "").strip() or None
             
             streaming_links_data = [
-                ("480p", request.form.get("streaming_link_1", "").strip()),
-                ("720p", request.form.get("streaming_link_2", "").strip()),
-                ("1080p", request.form.get("streaming_link_3", "").strip()),
+                ("Server 1", request.form.get("streaming_link_1", "").strip()),
+                ("Server 2", request.form.get("streaming_link_2", "").strip()),
+                ("Server 3", request.form.get("streaming_link_3", "").strip()),
             ]
             update_data["streaming_links"] = [{"name": name, "url": url} for name, url in streaming_links_data if url]
 
