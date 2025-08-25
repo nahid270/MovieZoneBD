@@ -588,8 +588,8 @@ index_html = """
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
 </body>
 </html>
- """
-<!DOCTYPE html>
+ 
+  """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
