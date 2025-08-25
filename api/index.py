@@ -238,9 +238,9 @@ index_html = """
   .search-results .result-info h5 { margin: 0; font-size: 0.9rem; }
   .search-results .result-info p { margin: 0; font-size: 0.8rem; color: var(--text-dark); }
   
-  /* --- [CORRECTED & FINAL] Hero Slider CSS --- */
-  .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; min-height: 60vh; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
-  .hero-swiper { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+  /* --- [CORRECTED 16:9 RATIO] Hero Slider CSS --- */
+  .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  .hero-swiper { width: 100%; height: 100%; }
   .hero-swiper .swiper-slide { position: relative; background-size: cover; background-position: center; display: flex; align-items: flex-end; color: white; text-decoration: none; }
   .hero-swiper .swiper-slide::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, transparent 100%); z-index: 1; }
   .hero-slide-content { position: relative; z-index: 2; padding: 30px; width: 100%; }
@@ -315,8 +315,8 @@ index_html = """
   @media (max-width: 768px) {
       body { padding-bottom: var(--nav-height); } .main-nav { padding: 10px 15px; } main { padding: 0 15px; } .logo { font-size: 24px; }
       .search-container { flex: 2; text-align: right; } .search-input { width: 150px; }
-      .hero-slider-container { min-height: 50vh; border-radius: 0; margin: var(--nav-height) -15px 20px -15px; }
-      .hero-slide-title { font-size: 1.8rem; } .hero-slide-meta { font-size: 0.9rem; }
+      .hero-slider-container { aspect-ratio: 16 / 9; border-radius: 0; margin: var(--nav-height) -15px 20px -15px; }
+      .hero-slide-title { font-size: 1.8rem; } .hero-slide-meta { font-size: 0.9rem; } .hero-slide-content { padding: 20px; }
       .category-section { margin: 25px 0; } .category-title { font-size: 1.2rem; }
       .full-page-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px 10px; }
       .full-page-grid-container { padding-top: 80px; } .full-page-grid-title { font-size: 1.8rem; }
