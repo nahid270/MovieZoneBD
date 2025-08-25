@@ -189,8 +189,9 @@ def send_notification_to_channel(movie_data):
         print(f"FATAL ERROR in send_notification_to_channel: {e}")
 
 # =========================================================================================
-# === [START] UPDATED index_html TEMPLATE =================================================
+# === [START] ALL HTML TEMPLATES ==========================================================
 # =========================================================================================
+
 index_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -540,7 +541,6 @@ index_html = """
         });
 
         // [NEW] Live Search Logic (Frontend part)
-        // দ্রষ্টব্য: এটি সম্পূর্ণ কাজ করার জন্য আপনার একটি ব্যাকএন্ড API প্রয়োজন হবে।
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         let debounceTimer;
@@ -553,14 +553,14 @@ index_html = """
                 return;
             }
             debounceTimer = setTimeout(() => {
-                fetch(`/api/search?q=${encodeURIComponent(query)}`) // আপনার API এন্ডপয়েন্ট এখানে দিন
+                fetch(`/api/search?q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(data => {
                         searchResults.innerHTML = '';
                         if (data.length > 0) {
                             data.slice(0, 5).forEach(item => { // Show max 5 results
                                 const link = document.createElement('a');
-                                link.href = `/movie/${item._id}`; // আপনার মুভি ডিটেইল পেজের লিঙ্ক
+                                link.href = `/movie/${item._id}`;
                                 link.innerHTML = `
                                     <img src="${item.poster || ''}" alt="${item.title}">
                                     <div class="result-info">
@@ -591,9 +591,6 @@ index_html = """
 </body>
 </html>
 """
-# =======================================================================================
-# === [END] UPDATED index_html TEMPLATE =================================================
-# =======================================================================================
 
 detail_html = """
 <!DOCTYPE html>
@@ -720,7 +717,7 @@ detail_html = """
       {% elif movie.type == 'movie' %}
         <div class="links-wrapper">
             <div class="links-container">
-                <!-- [REVERTED] Streaming Links Column -->
+                <!-- Streaming Links Column -->
                 {% if movie.streaming_links %}
                 <div class="link-section">
                     <h3 class="section-title" style="margin-top:0;">Streaming Links</h3>
@@ -808,7 +805,6 @@ genres_html = """
   .genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
   .genre-card { background: linear-gradient(45deg, #2c2c2c, #1a1a1a); border-radius: 8px; padding: 30px 20px; text-align: center; font-size: 1.4rem; font-weight: 700; transition: all 0.3s ease; border: 1px solid #444; }
   .genre-card:hover { transform: translateY(-5px) scale(1.03); background: linear-gradient(45deg, var(--netflix-red), #b00710); border-color: var(--netflix-red); }
-  /* [NEW] Footer */
   .main-footer { padding: 20px 50px; text-align: center; background-color: var(--netflix-black); border-top: 1px solid #222; color: #a0a0a0; font-size: 0.9rem; }
   .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
   @media (max-width: 768px) { 
@@ -819,7 +815,6 @@ genres_html = """
 <body>
 <div class="main-container"><a href="{{ url_for('home') }}" class="back-button"><i class="fas fa-arrow-left"></i> Back to Home</a><h1 class="page-title">{{ title }}</h1>
 <div class="genre-grid">{% for genre in genres %}<a href="{{ url_for('movies_by_genre', genre_name=genre) }}" class="genre-card"><span>{{ genre }}</span></a>{% endfor %}</div></div>
-<!-- [NEW] Footer -->
 <footer class="main-footer">
     <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
@@ -827,6 +822,7 @@ genres_html = """
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
 </body></html>
 """
+
 watch_html = """
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Watching: {{ title }}</title>
@@ -834,14 +830,12 @@ watch_html = """
     body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; } 
     .player-container { width: 100%; height: 100%; display: flex; flex-direction: column; } 
     .player-container iframe { width: 100%; height: 100%; border: 0; flex-grow: 1; }
-    /* [NEW] Footer */
     .main-footer { padding: 10px; text-align: center; background-color: #000; color: #a0a0a0; font-size: 0.8rem; flex-shrink: 0; }
     .main-footer a { color: #a0a0a0; text-decoration: none; transition: color 0.2s ease; } .main-footer a:hover { color: #E50914; }
 </style></head>
 <body>
 <div class="player-container">
     <iframe src="{{ watch_link }}" allowfullscreen allowtransparency allow="autoplay" scrolling="no" frameborder="0"></iframe>
-    <!-- [NEW] Footer -->
     <footer class="main-footer">
         <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
     </footer>
@@ -850,6 +844,7 @@ watch_html = """
 {% if ad_settings.social_bar_code %}{{ ad_settings.social_bar_code|safe }}{% endif %}
 </body></html>
 """
+
 admin_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -957,7 +952,6 @@ admin_html = """
             <fieldset><legend>Movie Links</legend>
                 <div class="form-group"><label>Watch Link (Main Embed URL):</label><input type="url" name="watch_link" placeholder="https://..."/></div><hr>
                 
-                <!-- [REVERTED] Streaming Links -->
                 <p><b>Streaming Links (Optional)</b></p>
                 <div class="form-group"><label>Streaming Link 1 (Server 1):</label><input type="url" name="streaming_link_1" /></div>
                 <div class="form-group"><label>Streaming Link 2 (Server 2):</label><input type="url" name="streaming_link_2" /></div>
@@ -1085,6 +1079,7 @@ admin_html = """
 </script>
 </body></html>
 """
+
 edit_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -1151,7 +1146,6 @@ edit_html = """
         <fieldset><legend>Movie Links</legend>
             <div class="form-group"><label>Watch Link (Main Embed):</label><input type="url" name="watch_link" value="{{ movie.watch_link or '' }}" /></div><hr>
             
-            <!-- [REVERTED] Streaming Links -->
             {% set stream_link_1 = (movie.streaming_links | selectattr('name', 'equalto', '480p') | map(attribute='url') | first) or '' %}
             {% set stream_link_2 = (movie.streaming_links | selectattr('name', 'equalto', '720p') | map(attribute='url') | first) or '' %}
             {% set stream_link_3 = (movie.streaming_links | selectattr('name', 'equalto', '1080p') | map(attribute='url') | first) or '' %}
@@ -1218,6 +1212,7 @@ edit_html = """
 </script>
 </body></html>
 """
+
 contact_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -1236,7 +1231,6 @@ contact_html = """
         textarea { resize: vertical; min-height: 120px; } button[type="submit"] { background: var(--netflix-red); color: white; font-weight: 700; cursor: pointer; border: none; padding: 12px 25px; border-radius: 4px; font-size: 1.1rem; width: 100%; }
         .success-message { text-align: center; padding: 20px; background-color: #1f4e2c; color: #d4edda; border-radius: 5px; margin-bottom: 20px; }
         .back-link { display: block; text-align: center; margin-top: 20px; color: var(--netflix-red); text-decoration: none; font-weight: bold; }
-        /* [NEW] Footer */
         .main-footer { padding: 20px; text-align: center; color: #a0a0a0; font-size: 0.9rem; width: 100%; }
         .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
     </style>
@@ -1259,7 +1253,6 @@ contact_html = """
         <a href="{{ url_for('home') }}" class="back-link">← Cancel</a>
     {% endif %}
 </div>
-<!-- [NEW] Footer -->
 <footer class="main-footer">
     <a href="https://t.me/TGLinkBase" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
@@ -1356,6 +1349,11 @@ dmca_html = """
 </body>
 </html>
 """
+
+# =======================================================================================
+# === [END] ALL HTML TEMPLATES ==========================================================
+# =======================================================================================
+
 
 def parse_filename(filename):
     LANGUAGE_MAP = {
@@ -1492,6 +1490,9 @@ def process_movie_list(movie_list):
     return [{**item, '_id': str(item['_id'])} for item in movie_list]
 
 
+# =======================================================================================
+# === [START] FLASK ROUTES ==============================================================
+# =======================================================================================
 
 @app.route('/')
 def home():
@@ -1577,8 +1578,6 @@ def disclaimer():
 def dmca():
     return render_template_string(dmca_html)
 
-# === [START] NEW API ROUTE FOR LIVE SEARCH ========================================
-# এই রুটটি নতুন index_html এর লাইভ সার্চ ফিচারটিকে সাপোর্ট করার জন্য যোগ করা হয়েছে।
 @app.route('/api/search')
 def api_search():
     query = request.args.get('q', '').strip()
@@ -1586,13 +1585,11 @@ def api_search():
         return jsonify([])
     
     try:
-        # Search the database for titles matching the query, limit to 10 results
         results = list(movies.find(
             {"title": {"$regex": query, "$options": "i"}},
-            {"_id": 1, "title": 1, "poster": 1, "release_date": 1} # Only fetch necessary fields
+            {"_id": 1, "title": 1, "poster": 1, "release_date": 1}
         ).limit(10))
         
-        # Convert ObjectId to string for JSON serialization
         for item in results:
             item['_id'] = str(item['_id'])
             
@@ -1600,23 +1597,18 @@ def api_search():
     except Exception as e:
         print(f"API Search Error: {e}")
         return jsonify({"error": "An error occurred during search"}), 500
-# === [END] NEW API ROUTE FOR LIVE SEARCH ==========================================
-
 
 @app.route('/admin', methods=["GET", "POST"])
 @requires_auth
 def admin():
     if request.method == "POST":
-        # [FIXED] Automatically add default category based on content type
         content_type = request.form.get("content_type", "movie")
         selected_categories = request.form.getlist("categories")
 
-        if content_type == 'movie':
-            if "Latest Movie" not in selected_categories:
-                selected_categories.append("Latest Movie")
-        elif content_type == 'series':
-            if "Latest Series" not in selected_categories:
-                selected_categories.append("Latest Series")
+        if content_type == 'movie' and "Latest Movie" not in selected_categories:
+            selected_categories.append("Latest Movie")
+        elif content_type == 'series' and "Latest Series" not in selected_categories:
+            selected_categories.append("Latest Series")
         
         movie_data = {
             "title": request.form.get("title", "").strip(),
@@ -1640,7 +1632,6 @@ def admin():
                 final_data = tmdb_details.copy()
                 final_data.update(movie_data)
                 movie_data = final_data
-
 
         if movie_data['type'] == "movie":
             watch_link = request.form.get("watch_link", "").strip()
@@ -1681,7 +1672,11 @@ def admin():
                         movie_data['episodes'].append(episode)
                     except (ValueError, TypeError): print(f"WARN: Invalid episode data for S{s}E{e}.")
 
-        movies.insert_one(movie_data)
+        inserted_id = movies.insert_one(movie_data).inserted_id
+        newly_added_movie = movies.find_one({"_id": inserted_id})
+        if newly_added_movie:
+            send_notification_to_channel(newly_added_movie)
+        
         return redirect(url_for('admin'))
 
     search_query = request.args.get('search', '').strip()
@@ -1849,7 +1844,6 @@ def telegram_webhook():
         tmdb_data = get_tmdb_details_from_title(parsed_info['title'], parsed_info['type'], parsed_info.get('year'))
 
         def get_or_create_content_entry(tmdb_details, parsed_details):
-            # [FIXED] Add default category on creation
             default_category = "Latest Movie" if parsed_details.get('type') == 'movie' else "Latest Series"
 
             if tmdb_details and tmdb_details.get("tmdb_id"):
@@ -1863,8 +1857,8 @@ def telegram_webhook():
                         "categories": [default_category],
                         "is_coming_soon": False, "streaming_links": []
                     }
-                    movies.insert_one(base_doc)
-                    newly_created_doc = movies.find_one({"tmdb_id": tmdb_id})
+                    inserted_id = movies.insert_one(base_doc).inserted_id
+                    newly_created_doc = movies.find_one({"_id": inserted_id})
                     send_notification_to_channel(newly_created_doc)
                     return newly_created_doc
                 return existing_entry
@@ -1883,8 +1877,8 @@ def telegram_webhook():
                         "categories": [default_category],
                         "is_coming_soon": False, "streaming_links": []
                     }
-                    movies.insert_one(shell_doc)
-                    newly_created_doc = movies.find_one({"_id": shell_doc['_id']})
+                    inserted_id = movies.insert_one(shell_doc).inserted_id
+                    newly_created_doc = movies.find_one({"_id": inserted_id})
                     send_notification_to_channel(newly_created_doc)
                     return newly_created_doc
                 print(f"INFO: Found existing manual entry for '{existing_entry['title']}'.")
@@ -1975,7 +1969,6 @@ def telegram_webhook():
                         
                         if res.get('ok'):
                             new_msg_id = res['result']['message_id']
-                            # Note: This scheduler may not work reliably on serverless platforms like Vercel
                             scheduler.add_job(func=delete_message_after_delay, trigger='date', run_date=datetime.now() + timedelta(minutes=30), args=[chat_id, new_msg_id], id=f'del_{chat_id}_{new_msg_id}', replace_existing=True)
                         else: 
                             requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': "Error sending file. It might have been deleted from the channel."})
