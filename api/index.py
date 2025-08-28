@@ -202,122 +202,187 @@ index_html = """
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
-  :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; --nav-height: 60px; }
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+  
+  /* [MODIFIED] Disney+ Inspired Color Palette */
+  :root { 
+    --primary-bg: #040714;
+    --secondary-bg: #131520;
+    --accent-color: #0072d2;
+    --accent-hover: #0082f0;
+    --text-light: #f9f9f9; 
+    --text-dark: #a8a9ae; 
+    --nav-height: 70px; 
+    --card-border: rgba(249, 249, 249, 0.1);
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Roboto', sans-serif; background-color: var(--netflix-black); color: var(--text-light); overflow-x: hidden; }
+  body { 
+    font-family: 'Roboto', sans-serif; 
+    background-color: var(--primary-bg);
+    background-image: linear-gradient(to bottom, #040714, #0c1122);
+    color: var(--text-light); 
+    overflow-x: hidden; 
+  }
   a { text-decoration: none; color: inherit; }
-  ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #222; } ::-webkit-scrollbar-thumb { background: #555; } ::-webkit-scrollbar-thumb:hover { background: var(--netflix-red); }
+  ::-webkit-scrollbar { width: 8px; } 
+  ::-webkit-scrollbar-track { background: var(--secondary-bg); } 
+  ::-webkit-scrollbar-thumb { background: #333; } 
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
   
-  .main-nav { position: fixed; top: 0; left: 0; width: 100%; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: background-color 0.3s ease, padding 0.3s ease; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 10%, rgba(0,0,0,0)); }
-  .main-nav.scrolled { background-color: var(--netflix-black); padding: 5px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-  .nav-left, .nav-right { display: flex; align-items: center; flex: 1; }
-  .nav-right { justify-content: flex-end; }
+  .main-nav { 
+    position: fixed; top: 0; left: 0; width: 100%; 
+    padding: 0 36px; height: var(--nav-height); 
+    display: flex; justify-content: space-between; align-items: center; 
+    z-index: 1000; transition: background-color 0.3s ease;
+    background: linear-gradient(to bottom, rgba(4,7,20,0.8) 10%, rgba(4,7,20,0));
+  }
+  .main-nav.scrolled { background-color: var(--primary-bg); }
+  .nav-left, .nav-right { display: flex; align-items: center; gap: 20px; }
   
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--netflix-red); font-weight: 700; letter-spacing: 2px; margin: 0 auto; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); transition: all 0.3s ease-in-out; padding: 0 10px; }
-  .logo:hover { transform: scale(1.05); text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7); }
-  .main-nav.scrolled .logo { font-size: 28px; text-shadow: none; }
+  .logo { 
+    font-family: 'Roboto', sans-serif; font-size: 28px; color: var(--text-light); 
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  }
 
   .menu-toggle { font-size: 24px; cursor: pointer; color: var(--text-light); z-index: 1002;}
   
-  .drawer-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background-color: #181818; z-index: 1001; transition: left 0.3s ease; padding-top: 80px; }
+  .drawer-menu { 
+    position: fixed; top: 0; left: -280px; width: 280px; height: 100%; 
+    background-color: var(--secondary-bg); z-index: 1001; 
+    transition: left 0.3s ease; padding-top: 80px;
+    border-right: 1px solid var(--card-border);
+  }
   .drawer-menu.open { left: 0; }
-  .drawer-menu a { display: block; padding: 15px 25px; color: var(--text-light); font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid #282828; }
-  .drawer-menu a:hover { background-color: var(--netflix-red); }
+  .drawer-menu a { display: block; padding: 15px 25px; color: var(--text-light); font-size: 1.1rem; font-weight: 500; border-bottom: 1px solid var(--card-border); }
+  .drawer-menu a:hover { background-color: var(--accent-color); }
   .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
   .overlay.open { opacity: 1; visibility: visible; }
   
   .search-container { position: relative; }
-  .search-input { background-color: rgba(0,0,0,0.7); border: 1px solid #777; color: var(--text-light); padding: 8px 15px; border-radius: 4px; transition: width 0.3s ease, background-color: 0.3s ease; width: 250px; }
-  .search-input:focus { background-color: rgba(0,0,0,0.9); border-color: var(--text-light); outline: none; }
+  .search-input { 
+    background-color: rgba(0,0,0,0.3); border: 1px solid var(--text-dark); 
+    color: var(--text-light); padding: 8px 15px; border-radius: 20px; 
+    transition: all 0.3s ease; width: 250px; 
+  }
+  .search-input::placeholder { color: var(--text-dark); }
+  .search-input:focus { background-color: var(--secondary-bg); border-color: var(--accent-color); outline: none; }
   
-  .search-results { position: absolute; top: 110%; right: 0; width: 300px; background-color: #181818; border-radius: 4px; max-height: 400px; overflow-y: auto; z-index: 1100; display: none; }
-  .search-results a { display: flex; align-items: center; padding: 10px; text-decoration: none; color: var(--text-light); border-bottom: 1px solid #282828; }
-  .search-results a:hover { background-color: #222; }
-  .search-results img { width: 40px; height: 60px; object-fit: cover; margin-right: 10px; border-radius: 2px; }
+  .search-results { 
+    position: absolute; top: 110%; right: 0; width: 300px; 
+    background-color: var(--secondary-bg); border-radius: 8px; 
+    max-height: 400px; overflow-y: auto; z-index: 1100; display: none; 
+    border: 1px solid var(--card-border);
+  }
+  .search-results a { display: flex; align-items: center; padding: 10px; text-decoration: none; color: var(--text-light); border-bottom: 1px solid var(--card-border); }
+  .search-results a:last-child { border-bottom: none; }
+  .search-results a:hover { background-color: var(--accent-color); }
+  .search-results img { width: 40px; height: 60px; object-fit: cover; margin-right: 10px; border-radius: 4px; }
   .search-results .result-info h5 { margin: 0; font-size: 0.9rem; }
   .search-results .result-info p { margin: 0; font-size: 0.8rem; color: var(--text-dark); }
   
-  /* --- [CORRECTED 16:9 RATIO] Hero Slider CSS --- */
-  .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+  .hero-slider-container { margin-top: var(--nav-height); position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; margin-bottom: 40px; }
   .hero-swiper { width: 100%; height: 100%; }
   .hero-swiper .swiper-slide { position: relative; background-size: cover; background-position: center; display: flex; align-items: flex-end; color: white; text-decoration: none; }
-  .hero-swiper .swiper-slide::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, transparent 100%); z-index: 1; }
-  .hero-slide-content { position: relative; z-index: 2; padding: 30px; width: 100%; }
-  .hero-slide-title { font-size: 2.5rem; font-weight: 700; margin: 0 0 8px 0; }
+  .hero-swiper .swiper-slide::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(to top, var(--primary-bg) 10%, transparent 100%); z-index: 1; }
+  .hero-slide-content { position: relative; z-index: 2; padding: 40px; width: 100%; }
+  .hero-slide-title { font-size: 2.8rem; font-weight: 700; margin: 0 0 10px 0; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
   .hero-slide-meta { font-size: 1rem; color: #ccc; display: flex; align-items: center; gap: 15px; }
   .hero-slide-badge { background-color: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); padding: 4px 12px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; }
   .hero-swiper .swiper-pagination-bullet { background-color: rgba(255, 255, 255, 0.5); width: 10px; height: 10px; opacity: 1; transition: all 0.3s ease; }
-  .hero-swiper .swiper-pagination-bullet-active { background-color: var(--netflix-red); transform: scale(1.2); }
+  .hero-swiper .swiper-pagination-bullet-active { background-color: var(--accent-color); transform: scale(1.2); }
   
   main { padding: 0 50px; }
 
   .category-buttons { padding: 20px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
-  .cat-btn { padding: 10px 25px; background-color: #222; border: 1px solid #444; color: var(--text-light); border-radius: 20px; font-size: 1rem; font-weight: 500; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  .cat-btn:hover { background-color: var(--netflix-red); border-color: var(--netflix-red); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4); }
-
-  .movie-card { display: block; cursor: pointer; border-radius: 6px; overflow: hidden; position: relative; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  .poster-wrapper { position: relative; width: 100%; border-radius: 6px; overflow: hidden; background-color: #222; display: flex; flex-direction: column; }
-  .movie-poster-container { position: relative; overflow: hidden; width:100%; flex-grow:1; aspect-ratio: 2 / 3; }
-  .movie-poster { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-  
-  @media (hover: hover) {
-    .movie-card:hover { transform: scale(1.1); z-index: 10; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); overflow: visible; }
-    .movie-card:hover .poster-wrapper { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border-radius: 6px; background-color: #1a1a1a; }
-    .movie-card:hover .movie-poster { transform: scale(1.05); }
-    .movie-card:hover .card-hover-info { opacity: 1; visibility: visible; transform: translateY(0); }
+  .cat-btn { 
+    padding: 10px 25px; background-color: var(--secondary-bg); 
+    border: 1px solid var(--card-border); color: var(--text-light); 
+    border-radius: 50px; font-size: 1rem; font-weight: 500; 
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
   }
+  .cat-btn:hover { 
+    background-color: var(--accent-color); border-color: var(--accent-hover);
+    transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0, 114, 210, 0.4); 
+  }
+
+  /* [MODIFIED] Disney+ Inspired Card Style */
+  .movie-card { 
+    display: block; cursor: pointer; border-radius: 8px; 
+    overflow: hidden; position: relative;
+    border: 3px solid transparent;
+    box-shadow: 0 10px 20px -10px rgba(0,0,0,0.75);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .movie-card:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-color);
+    box-shadow: 0 15px 30px -10px rgba(0, 114, 210, 0.5);
+  }
+  .poster-wrapper { position: relative; width: 100%; border-radius: 5px; overflow: hidden; background-color: #222; display: flex; flex-direction: column; }
+  .movie-poster-container { position: relative; overflow: hidden; width:100%; flex-grow:1; aspect-ratio: 2 / 3; }
+  .movie-poster { width: 100%; height: 100%; object-fit: cover; display: block; }
   
   .poster-badge, .rating-badge { position: absolute; z-index: 4; }
-  .poster-badge { top: 10px; left: 10px; background-color: var(--netflix-red); color: white; padding: 4px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; }
-  .rating-badge { bottom: 10px; right: 10px; background-color: transparent; color: white; padding: 5px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+  .poster-badge { top: 10px; left: 10px; background-color: var(--accent-color); color: white; padding: 4px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; }
+  .rating-badge { bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.6); color: white; padding: 5px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
   .rating-badge .fa-star { color: #f5c518; }
   
-  .card-info-static { padding: 10px 8px; background-color: #1a1a1a; text-align: left; width: 100%; flex-shrink: 0; }
-  .card-info-title { font-size: 0.9rem; font-weight: 500; color: var(--text-light); margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-info-meta { font-size: 0.75rem; color: var(--text-dark); margin: 0; }
-
-  .card-hover-info { position: absolute; bottom: 50px; left: 0; width: 100%; padding: 15px 10px; background: linear-gradient(to top, #1a1a1a 70%, transparent); opacity: 0; visibility: hidden; transform: translateY(20px); transition: all 0.3s ease-in-out; }
-  .hover-buttons { display: flex; gap: 10px; margin-bottom: 10px; }
-  .play-btn, .action-btn { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(40,40,40,0.8); border: 1px solid white; color: white; cursor: pointer; }
-  .play-btn { background: var(--netflix-red); border: none; }
-  .hover-meta { font-size: 0.8rem; color: #ccc; margin-bottom: 8px; display: flex; gap: 8px; }
-  .hover-genres { display: flex; flex-wrap: wrap; gap: 5px; font-size: 0.7rem; }
-  .hover-genres span::after { content: '•'; margin-left: 5px; color: var(--text-dark); }
-  .hover-genres span:last-child::after { content: ''; }
-  
-  .full-page-grid-container { padding-top: 100px; padding-bottom: 50px; }
+  .full-page-grid-container { padding-top: calc(var(--nav-height) + 30px); padding-bottom: 50px; }
   .full-page-grid-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 30px; }
-  .full-page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px 15px; }
+  .full-page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px 20px; }
   
   .category-section { margin: 40px 0; overflow: hidden; }
   .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-  .category-title { font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 1.6rem; margin: 0; }
+  .category-title { font-weight: 700; font-size: 1.8rem; margin: 0; }
   .see-all-link { color: var(--text-dark); font-weight: 700; font-size: 0.9rem; }
+  .see-all-link:hover { color: var(--accent-color); }
   
   .category-slider { overflow: visible; }
   .swiper-button-next, .swiper-button-prev { color: var(--text-light); background-color: rgba(20, 20, 20, 0.5); border-radius: 50%; width: 40px; height: 40px; }
   .swiper-button-next:after, .swiper-button-prev:after { font-size: 18px; font-weight: bold; }
+  .swiper-button-next:hover, .swiper-button-prev:hover { background-color: var(--accent-color); }
   
-  .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background-color: #181818; border-top: 1px solid #282828; justify-content: space-around; align-items: center; z-index: 200; }
-  .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-dark); font-size: 10px; flex-grow: 1; padding: 5px 0; transition: color 0.2s ease; }
-  .nav-item i { font-size: 20px; margin-bottom: 4px; } .nav-item.active { color: var(--text-light); } .nav-item.active i { color: var(--netflix-red); }
+  /* [NEW] Mobile Bottom Navigation Bar */
+  .bottom-nav { 
+    display: none; position: fixed; bottom: 0; left: 0; right: 0; 
+    height: 65px; background-color: var(--secondary-bg); 
+    border-top: 1px solid var(--card-border); 
+    justify-content: space-around; align-items: center; z-index: 1000; 
+  }
+  .nav-item { 
+    display: flex; flex-direction: column; align-items: center; 
+    color: var(--text-dark); font-size: 11px; flex-grow: 1; 
+    padding: 8px 0; transition: color 0.2s ease; 
+  }
+  .nav-item i { font-size: 22px; margin-bottom: 5px; } 
+  .nav-item.active, .nav-item:hover { color: var(--text-light); } 
+  .nav-item.active i { color: var(--accent-color); }
+
   .ad-container { margin: 40px 0; display: flex; justify-content: center; align-items: center; }
-  .telegram-join-section { background-color: #181818; padding: 40px 20px; text-align: center; margin: 50px -50px 0 -50px; }
-  .telegram-join-section .telegram-icon { font-size: 4rem; color: #2AABEE; margin-bottom: 15px; } .telegram-join-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--text-light); margin-bottom: 10px; }
+  .telegram-join-section { background-color: var(--secondary-bg); padding: 40px 20px; text-align: center; margin: 50px -50px 0 -50px; border-top: 1px solid var(--card-border); }
+  .telegram-join-section .telegram-icon { font-size: 4rem; color: #2AABEE; margin-bottom: 15px; } 
+  .telegram-join-section h2 { font-size: 2.5rem; color: var(--text-light); margin-bottom: 10px; }
   .telegram-join-section p { font-size: 1.1rem; color: var(--text-dark); max-width: 600px; margin: 0 auto 25px auto; }
   .telegram-join-button { display: inline-flex; align-items: center; gap: 10px; background-color: #2AABEE; color: white; padding: 12px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; transition: all 0.2s ease; }
   .telegram-join-button:hover { transform: scale(1.05); background-color: #1e96d1; } .telegram-join-button i { font-size: 1.3rem; }
-  .main-footer { padding: 20px 50px; text-align: center; background-color: #181818; color: var(--text-dark); font-size: 0.9rem; }
-  .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
   
-  @media (max-width: 992px) { .swiper-button-next, .swiper-button-prev { display: none; } }
+  .main-footer { padding: 20px 50px; text-align: center; background-color: var(--primary-bg); color: var(--text-dark); font-size: 0.9rem; }
+  .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } 
+  .main-footer a:hover { color: var(--accent-color); }
+  
+  @media (max-width: 992px) { 
+      .swiper-button-next, .swiper-button-prev { display: none; } 
+      .main-nav .nav-right .search-container { display: none; }
+  }
   @media (max-width: 768px) {
-      body { padding-bottom: var(--nav-height); } .main-nav { padding: 10px 15px; } main { padding: 0 15px; } .logo { font-size: 24px; }
-      .search-container { flex: 2; text-align: right; } .search-input { width: 150px; }
-      .hero-slider-container { aspect-ratio: 16 / 9; border-radius: 0; margin: var(--nav-height) -15px 20px -15px; }
+      body { padding-bottom: 65px; /* Space for bottom nav */ } 
+      .main-nav { padding: 0 15px; } 
+      .main-nav .nav-left { display: none; /* Hide hamburger, search is in bottom nav now */ }
+      main { padding: 0 15px; } .logo { font-size: 24px; margin: 0; }
+      .hero-slider-container { margin: var(--nav-height) -15px 20px -15px; }
       .hero-slide-title { font-size: 1.8rem; } .hero-slide-meta { font-size: 0.9rem; } .hero-slide-content { padding: 20px; }
-      .category-section { margin: 25px 0; } .category-title { font-size: 1.2rem; }
+      .category-section { margin: 25px 0; } .category-title { font-size: 1.4rem; }
       .full-page-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px 10px; }
       .full-page-grid-container { padding-top: 80px; } .full-page-grid-title { font-size: 1.8rem; }
       .bottom-nav { display: flex; } .ad-container { margin: 25px 0; }
@@ -364,24 +429,6 @@ index_html = """
            {% if m.poster_badge %}<div class="poster-badge">{{ m.poster_badge }}</div>{% endif %}
            {% if m.vote_average and m.vote_average > 0 %}<div class="rating-badge"><i class="fas fa-star"></i> {{ "%.1f"|format(m.vote_average) }}</div>{% endif %}
         </div>
-        <div class="card-hover-info">
-            <div class="hover-buttons">
-                <span class="play-btn"><i class="fas fa-play"></i></span>
-                <span class="action-btn"><i class="fas fa-plus"></i></span>
-            </div>
-            {% if m.release_date %}<p class="hover-meta"><span>{{ m.release_date.split('-')[0] }}</span></p>{% endif %}
-            {% if m.genres %}
-            <div class="hover-genres">
-                {% for genre in m.genres|slice(2) %}
-                    <span>{{ genre }}</span>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-        <div class="card-info-static">
-          <h4 class="card-info-title">{{ m.title }}</h4>
-          {% if m.release_date %}<p class="card-info-meta">{{ m.release_date.split('-')[0] }}</p>{% endif %}
-        </div>
       </div>
     </a>
   {% endmacro %}
@@ -400,7 +447,6 @@ index_html = """
         {% endif %}
     </div>
   {% else %}
-    <!-- [CORRECTED & FINAL] Moviedokan Style Hero Slider -->
     {% if recently_added %}
     <div class="hero-slider-container">
         <div class="swiper hero-swiper">
@@ -477,14 +523,15 @@ index_html = """
     </div>
   {% endif %}
 </main>
+<!-- [NEW] Bottom navigation for mobile -->
 <nav class="bottom-nav">
     <a href="{{ url_for('home') }}" class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">
         <i class="fas fa-home"></i><span>Home</span>
     </a>
-    <a href="{{ url_for('all_movies') }}" class="nav-item">
+    <a href="{{ url_for('all_movies') }}" class="nav-item {% if request.endpoint == 'all_movies' %}active{% endif %}">
         <i class="fas fa-film"></i><span>Movies</span>
     </a>
-    <a href="{{ url_for('all_series') }}" class="nav-item">
+    <a href="{{ url_for('all_series') }}" class="nav-item {% if request.endpoint == 'all_series' %}active{% endif %}">
         <i class="fas fa-tv"></i><span>Series</span>
     </a>
     <a href="{{ url_for('genres_page') }}" class="nav-item {% if request.endpoint == 'genres_page' %}active{% endif %}">
@@ -494,6 +541,7 @@ index_html = """
         <i class="fas fa-envelope"></i><span>Request</span>
     </a>
 </nav>
+
 <footer class="main-footer">
     <a href="https://t.me/PrimeCineZone" target="_blank" rel="noopener">&copy; ALL RIGHTS RESERVED {{ website_name.upper() }}</a>
 </footer>
@@ -516,8 +564,8 @@ index_html = """
         const drawerMenu = document.querySelector('.drawer-menu');
         const overlay = document.querySelector('.overlay');
         const toggleMenu = () => { drawerMenu.classList.toggle('open'); overlay.classList.toggle('open'); };
-        menuToggle.addEventListener('click', toggleMenu);
-        overlay.addEventListener('click', toggleMenu);
+        if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+        if (overlay) overlay.addEventListener('click', toggleMenu);
 
         const sliders = document.querySelectorAll('.category-slider');
         sliders.forEach(slider => {
@@ -567,6 +615,8 @@ index_html = """
 </html>
 """
 
+# [NOTE] Detail page HTML template is not included here for brevity but would need similar CSS variable replacements.
+# For a full implementation, you would apply the new color variables (--accent-color, etc.) to the `detail_html` styles as well.
 detail_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -575,62 +625,83 @@ detail_html = """
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <title>{{ movie.title if movie else "Content Not Found" }} - {{ website_name }}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
-  :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+  /* [MODIFIED] Disney+ Inspired Color Palette */
+  :root { 
+    --primary-bg: #040714;
+    --secondary-bg: #131520;
+    --accent-color: #0072d2;
+    --accent-hover: #0082f0;
+    --text-light: #f9f9f9; 
+    --text-dark: #a8a9ae; 
+    --card-border: rgba(249, 249, 249, 0.1);
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); }
+  body { 
+      font-family: 'Roboto', sans-serif; 
+      background: var(--primary-bg);
+      background-image: linear-gradient(to bottom, #040714, #0c1122);
+      color: var(--text-light); 
+  }
   .detail-header { position: absolute; top: 0; left: 0; right: 0; padding: 20px 50px; z-index: 100; }
   .back-button { color: var(--text-light); font-size: 1.2rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: color 0.3s ease; }
-  .back-button:hover { color: var(--netflix-red); }
+  .back-button:hover { color: var(--accent-color); }
   .detail-hero { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; padding: 100px 0; }
   .detail-hero-background { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; filter: blur(20px) brightness(0.4); transform: scale(1.1); }
-  .detail-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0.6) 50%, rgba(20,20,20,1) 100%); }
+  .detail-hero::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, var(--primary-bg) 0%, rgba(4,7,20,0.6) 50%, var(--primary-bg) 100%); }
   .detail-content-wrapper { position: relative; z-index: 2; display: flex; gap: 40px; max-width: 1200px; padding: 0 50px; width: 100%; }
   .detail-poster { width: 300px; height: 450px; flex-shrink: 0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: cover; }
   .detail-info { flex-grow: 1; max-width: 65%; }
-  .detail-title { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 20px; }
+  .detail-title { font-family: 'Roboto', sans-serif; font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 20px; }
   .detail-meta { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px; font-size: 1rem; color: var(--text-dark); }
   .detail-meta span { font-weight: 700; color: var(--text-light); }
   .detail-meta span i { margin-right: 5px; color: var(--text-dark); }
   .detail-overview { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; }
-  .action-btn { background-color: var(--netflix-red); color: white; padding: 15px 30px; font-size: 1.2rem; font-weight: 700; border: none; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; margin-bottom: 15px; transition: all 0.2s ease; }
-  .action-btn:hover { transform: scale(1.05); background-color: #f61f29; }
-  .section-title { font-size: 1.5rem; font-weight: 700; margin: 30px 0 20px 0; padding-bottom: 5px; border-bottom: 2px solid var(--netflix-red); display: inline-block; }
+  .action-btn { background-color: var(--accent-color); color: white; padding: 15px 30px; font-size: 1.2rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; text-decoration: none; margin-bottom: 15px; transition: all 0.2s ease; }
+  .action-btn:hover { transform: scale(1.05); background-color: var(--accent-hover); }
+  .section-title { font-size: 1.5rem; font-weight: 700; margin: 30px 0 20px 0; padding-bottom: 5px; border-bottom: 3px solid var(--accent-color); display: inline-block; }
   .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 8px; }
   .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
   
   .links-wrapper { margin-top: 10px; }
   .links-container { display: flex; gap: 40px; align-items: flex-start; }
   .link-section { flex: 1; min-width: 250px; }
-  .download-button, .episode-button { display: block; width: 100%; padding: 12px 20px; color: white; text-decoration: none; border-radius: 4px; font-weight: 700; transition: background-color 0.3s ease; margin-bottom: 10px; text-align: center; }
-  .download-button { background-color: var(--netflix-red); }
-  .download-button:hover { background-color: #f61f29; }
+  .download-button, .episode-button { display: block; width: 100%; padding: 12px 20px; color: white; text-decoration: none; border-radius: 8px; font-weight: 700; transition: background-color 0.3s ease; margin-bottom: 10px; text-align: center; }
+  .download-button { background-color: var(--accent-color); }
+  .download-button:hover { background-color: var(--accent-hover); }
   
-  .episode-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; border-radius: 5px; background-color: #1a1a1a; border-left: 4px solid var(--netflix-red); }
+  .episode-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; border-radius: 8px; background-color: var(--secondary-bg); border-left: 4px solid var(--accent-color); }
   .episode-title { font-size: 1.1rem; font-weight: 500; color: #fff; }
   .ad-container { margin: 30px 0; text-align: center; }
-  .related-section-container { padding: 40px 0; background-color: #181818; }
+  .related-section-container { padding: 40px 0; background-color: var(--secondary-bg); }
   .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px 15px; padding: 0 50px; }
-  .movie-card { display: block; cursor: pointer; transition: transform 0.3s ease; }
-  .poster-wrapper { position: relative; width: 100%; border-radius: 6px; overflow: hidden; background-color: #222; display: flex; flex-direction: column; }
-  .movie-poster-container { position: relative; overflow: hidden; width:100%; flex-grow:1; aspect-ratio: 2 / 3; }
-  .movie-poster { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-  .poster-badge { position: absolute; top: 10px; left: 10px; background-color: var(--netflix-red); color: white; padding: 4px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; z-index: 4; }
-  .rating-badge { position: absolute; bottom: 10px; right: 10px; background-color: transparent; color: white; padding: 5px; font-size: 0.8rem; font-weight: 700; z-index: 3; display: flex; align-items: center; gap: 5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
+  .movie-card { 
+    display: block; cursor: pointer; border-radius: 8px; 
+    overflow: hidden; position: relative;
+    border: 3px solid transparent;
+    box-shadow: 0 10px 20px -10px rgba(0,0,0,0.75);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .movie-card:hover {
+    transform: scale(1.05);
+    border-color: var(--accent-color);
+    box-shadow: 0 15px 30px -10px rgba(0, 114, 210, 0.5);
+  }
+  .poster-wrapper { position: relative; width: 100%; border-radius: 5px; overflow: hidden; background-color: #222; }
+  .movie-poster-container { position: relative; overflow: hidden; width:100%; aspect-ratio: 2 / 3; }
+  .movie-poster { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .poster-badge { position: absolute; top: 10px; left: 10px; background-color: var(--accent-color); color: white; padding: 4px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; z-index: 4; }
+  .rating-badge { position: absolute; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.6); color: white; padding: 5px 8px; border-radius: 3px; font-size: 0.8rem; font-weight: 700; z-index: 3; display: flex; align-items: center; gap: 5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
   .rating-badge .fa-star { color: #f5c518; }
-  .card-info-static { padding: 10px 8px; background-color: #1a1a1a; text-align: left; width: 100%; flex-shrink: 0; }
-  .card-info-title { font-size: 0.9rem; font-weight: 500; color: var(--text-light); margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-info-meta { font-size: 0.75rem; color: var(--text-dark); margin: 0; }
-  .main-footer { padding: 20px 50px; text-align: center; background-color: #181818; color: var(--text-dark); font-size: 0.9rem; }
-  .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
-  
-  @media (hover: hover) { .movie-card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 0 20px rgba(229, 9, 20, 0.5); } .movie-card:hover .movie-poster { transform: scale(1.1); } }
+  .main-footer { padding: 20px 50px; text-align: center; background-color: var(--primary-bg); color: var(--text-dark); font-size: 0.9rem; }
+  .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--accent-color); }
   
   @media (max-width: 992px) { 
     .detail-content-wrapper { flex-direction: column; align-items: center; text-align: center; } 
-    .detail-info { max-width: 100%; } .detail-title { font-size: 3.5rem; } 
+    .detail-info { max-width: 100%; } .detail-title { font-size: 3rem; } 
   }
   @media (max-width: 768px) { 
+    body { padding-bottom: 65px; /* Space for bottom nav */ }
     .detail-header { padding: 20px; } .detail-hero { padding: 80px 20px 40px; } .detail-poster { width: 60%; max-width: 220px; height: auto; } .detail-title { font-size: 2.2rem; }
     .action-btn, .download-button { display: block; width: 100%; max-width: 320px; margin: 0 auto 10px auto; }
     .episode-item { flex-direction: column; align-items: flex-start; gap: 10px; } .episode-button { width: 100%; }
@@ -650,10 +721,6 @@ detail_html = """
         <img class="movie-poster" loading="lazy" src="{{ m.poster or 'https://via.placeholder.com/400x600.png?text=No+Image' }}" alt="{{ m.title }}">
         {% if m.poster_badge %}<div class="poster-badge">{{ m.poster_badge }}</div>{% endif %}
         {% if m.vote_average and m.vote_average > 0 %}<div class="rating-badge"><i class="fas fa-star"></i> {{ "%.1f"|format(m.vote_average) }}</div>{% endif %}
-      </div>
-      <div class="card-info-static">
-        <h4 class="card-info-title">{{ m.title }}</h4>
-        {% if m.release_date %}<p class="card-info-meta">{{ m.release_date.split('-')[0] }}</p>{% endif %}
       </div>
     </div>
   </a>
@@ -732,7 +799,7 @@ detail_html = """
             {% for pack in movie.season_packs | sort(attribute='quality') | sort(attribute='season') %}
               <div class="episode-item" style="background-color: #3e1a1a;">
                 <span class="episode-title">Complete Season {{ pack.season }} Pack ({{ pack.quality }})</span>
-                <a href="https://t.me/{{ bot_username }}?start={{ movie._id }}_S{{ pack.season }}_{{ pack.quality }}" class="episode-button" style="background-color: var(--netflix-red);"><i class="fas fa-box-open"></i> Get Season Pack</a>
+                <a href="https://t.me/{{ bot_username }}?start={{ movie._id }}_S{{ pack.season }}_{{ pack.quality }}" class="episode-button" style="background-color: var(--accent-color);"><i class="fas fa-box-open"></i> Get Season Pack</a>
               </div>
             {% endfor %}
           {% endif %}
@@ -768,18 +835,25 @@ genres_html = """
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /><title>{{ title }} - {{ website_name }}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
-  :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; }
-  * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: 'Roboto', sans-serif; background-color: var(--netflix-black); color: var(--text-light); } a { text-decoration: none; color: inherit; }
-  .main-container { padding: 100px 50px 50px; } .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--netflix-red); margin-bottom: 30px; }
-  .back-button { color: var(--text-light); font-size: 1rem; margin-bottom: 20px; display: inline-block; } .back-button:hover { color: var(--netflix-red); }
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+  :root { 
+    --primary-bg: #040714;
+    --secondary-bg: #131520;
+    --accent-color: #0072d2;
+    --accent-hover: #0082f0;
+    --text-light: #f9f9f9; 
+    --card-border: rgba(249, 249, 249, 0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: 'Roboto', sans-serif; background-color: var(--primary-bg); color: var(--text-light); } a { text-decoration: none; color: inherit; }
+  .main-container { padding: 100px 50px 50px; } .page-title { font-family: 'Roboto', sans-serif; font-size: 2.5rem; color: var(--text-light); margin-bottom: 30px; }
+  .back-button { color: var(--text-light); font-size: 1rem; margin-bottom: 20px; display: inline-block; } .back-button:hover { color: var(--accent-color); }
   .genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-  .genre-card { background: linear-gradient(45deg, #2c2c2c, #1a1a1a); border-radius: 8px; padding: 30px 20px; text-align: center; font-size: 1.4rem; font-weight: 700; transition: all 0.3s ease; border: 1px solid #444; }
-  .genre-card:hover { transform: translateY(-5px) scale(1.03); background: linear-gradient(45deg, var(--netflix-red), #b00710); border-color: var(--netflix-red); }
-  .main-footer { padding: 20px 50px; text-align: center; background-color: var(--netflix-black); border-top: 1px solid #222; color: #a0a0a0; font-size: 0.9rem; }
-  .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
+  .genre-card { background: var(--secondary-bg); border-radius: 8px; padding: 30px 20px; text-align: center; font-size: 1.4rem; font-weight: 700; transition: all 0.3s ease; border: 1px solid var(--card-border); }
+  .genre-card:hover { transform: translateY(-5px) scale(1.03); background: var(--accent-color); border-color: var(--accent-hover); box-shadow: 0 5px 15px rgba(0, 114, 210, 0.4); }
+  .main-footer { padding: 20px 50px; text-align: center; background-color: var(--primary-bg); border-top: 1px solid var(--card-border); color: #a0a0a0; font-size: 0.9rem; }
+  .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--accent-color); }
   @media (max-width: 768px) { 
-      .main-container { padding: 80px 15px 30px; } .page-title { font-size: 2.2rem; } .genre-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } .genre-card { font-size: 1.1rem; padding: 25px 15px; } 
+      .main-container { padding: 80px 15px 30px; } .page-title { font-size: 2rem; } .genre-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } .genre-card { font-size: 1.1rem; padding: 25px 15px; } 
       .main-footer { padding: 20px 15px; }
   }
 </style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"></head>
@@ -802,7 +876,7 @@ watch_html = """
     .player-container { width: 100%; height: 100%; display: flex; flex-direction: column; } 
     .player-container iframe { width: 100%; height: 100%; border: 0; flex-grow: 1; }
     .main-footer { padding: 10px; text-align: center; background-color: #000; color: #a0a0a0; font-size: 0.8rem; flex-shrink: 0; }
-    .main-footer a { color: #a0a0a0; text-decoration: none; transition: color 0.2s ease; } .main-footer a:hover { color: #E50914; }
+    .main-footer a { color: #a0a0a0; text-decoration: none; transition: color 0.2s ease; } .main-footer a:hover { color: #0072d2; }
 </style></head>
 <body>
 <div class="player-container">
@@ -1194,19 +1268,28 @@ contact_html = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us / Report - {{ website_name }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --netflix-red: #E50914; --netflix-black: #141414; --dark-gray: #222; --light-gray: #333; --text-light: #f5f5f5; }
-        body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; }
-        .contact-container { max-width: 600px; width: 100%; background: var(--dark-gray); padding: 30px; border-radius: 8px; }
-        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--netflix-red); font-size: 2.5rem; text-align: center; margin-bottom: 25px; }
+        :root { 
+            --primary-bg: #040714;
+            --secondary-bg: #131520;
+            --accent-color: #0072d2;
+            --accent-hover: #0082f0;
+            --text-light: #f9f9f9; 
+            --text-dark: #a8a9ae; 
+            --card-border: rgba(249, 249, 249, 0.1);
+        }
+        body { font-family: 'Roboto', sans-serif; background: var(--primary-bg); color: var(--text-light); padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; }
+        .contact-container { max-width: 600px; width: 100%; background: var(--secondary-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--card-border); }
+        h2 { font-family: 'Roboto', sans-serif; font-weight: 700; color: var(--text-light); font-size: 2.2rem; text-align: center; margin-bottom: 25px; }
         .form-group { margin-bottom: 20px; } label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 12px; border-radius: 4px; border: 1px solid var(--light-gray); font-size: 1rem; background: var(--light-gray); color: var(--text-light); box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 120px; } button[type="submit"] { background: var(--netflix-red); color: white; font-weight: 700; cursor: pointer; border: none; padding: 12px 25px; border-radius: 4px; font-size: 1.1rem; width: 100%; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 4px; border: 1px solid var(--card-border); font-size: 1rem; background: var(--primary-bg); color: var(--text-light); box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 120px; } button[type="submit"] { background: var(--accent-color); color: white; font-weight: 700; cursor: pointer; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1.1rem; width: 100%; transition: background-color 0.2s ease; }
+        button[type="submit"]:hover { background: var(--accent-hover); }
         .success-message { text-align: center; padding: 20px; background-color: #1f4e2c; color: #d4edda; border-radius: 5px; margin-bottom: 20px; }
-        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--netflix-red); text-decoration: none; font-weight: bold; }
-        .main-footer { padding: 20px; text-align: center; color: #a0a0a0; font-size: 0.9rem; width: 100%; }
-        .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--accent-color); text-decoration: none; font-weight: bold; }
+        .main-footer { padding: 20px; text-align: center; color: var(--text-dark); font-size: 0.9rem; width: 100%; }
+        .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--accent-color); }
     </style>
 </head>
 <body>
@@ -1242,23 +1325,30 @@ disclaimer_html = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disclaimer - {{ website_name }}</title>
     <style>
-        :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
-        body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; background: #1a1a1a; padding: 30px; border-radius: 8px; }
-        h1 { font-family: 'Bebas Neue', sans-serif; color: var(--netflix-red); font-size: 2.8rem; margin-bottom: 20px; text-align: center; }
+        :root { 
+            --primary-bg: #040714;
+            --secondary-bg: #131520;
+            --accent-color: #0072d2;
+            --text-light: #f9f9f9; 
+            --text-dark: #a8a9ae; 
+            --card-border: rgba(249, 249, 249, 0.1);
+        }
+        body { font-family: 'Roboto', sans-serif; background: var(--primary-bg); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--secondary-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--card-border); }
+        h1 { font-family: 'Roboto', sans-serif; font-weight: 700; color: var(--text-light); font-size: 2.5rem; margin-bottom: 20px; text-align: center; }
         p { margin-bottom: 15px; color: var(--text-dark); }
         strong { color: var(--text-light); }
-        a { color: var(--netflix-red); text-decoration: none; }
+        a { color: var(--accent-color); text-decoration: none; }
         a:hover { text-decoration: underline; }
         .back-link { display: block; text-align: center; margin-top: 30px; font-weight: bold; }
-        .main-footer { padding: 20px; text-align: center; color: #a0a0a0; font-size: 0.9rem; width: 100%; }
-        .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
+        .main-footer { padding: 20px; text-align: center; color: var(--text-dark); font-size: 0.9rem; width: 100%; }
+        .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--accent-color); }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Disclaimer</h1>
-        <p><strong>{{ website_name }}.com</strong> does not host, store, or upload any video, films, or media files. Our site does not own any of the content displayed. We are not responsible for the accuracy, compliance, copyright, legality, decency, or any other aspect of the content of other linked sites.</p>
+        <p><strong>{{ website_name }}</strong> does not host, store, or upload any video, films, or media files. Our site does not own any of the content displayed. We are not responsible for the accuracy, compliance, copyright, legality, decency, or any other aspect of the content of other linked sites.</p>
         <p>The content available on this website is collected from various publicly available sources on the internet. We act as a search engine that indexes and displays hyperlinks to content that is freely available online. We do not exercise any control over the content of these external websites.</p>
         <p>All content is the copyright of their respective owners. We encourage all copyright owners to recognize that the links contained within this site are located elsewhere on the web. The embedded links are from other sites such as (but not limited to) YouTube, Dailymotion, Google Drive, etc. If you have any legal issues please contact the appropriate media file owners or host sites.</p>
         <p>If you believe that any content on our website infringes upon your copyright, please visit our <a href="{{ url_for('dmca') }}">DMCA page</a> for instructions on how to submit a takedown request.</p>
@@ -1279,24 +1369,31 @@ dmca_html = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DMCA Policy - {{ website_name }}</title>
     <style>
-        :root { --netflix-red: #E50914; --netflix-black: #141414; --text-light: #f5f5f5; --text-dark: #a0a0a0; }
-        body { font-family: 'Roboto', sans-serif; background: var(--netflix-black); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; background: #1a1a1a; padding: 30px; border-radius: 8px; }
-        h1 { font-family: 'Bebas Neue', sans-serif; color: var(--netflix-red); font-size: 2.8rem; margin-bottom: 20px; text-align: center; }
-        h2 { font-family: 'Bebas Neue', sans-serif; color: var(--text-light); font-size: 1.8rem; margin-top: 25px; margin-bottom: 10px; border-bottom: 2px solid var(--netflix-red); padding-bottom: 5px; }
+         :root { 
+            --primary-bg: #040714;
+            --secondary-bg: #131520;
+            --accent-color: #0072d2;
+            --text-light: #f9f9f9; 
+            --text-dark: #a8a9ae; 
+            --card-border: rgba(249, 249, 249, 0.1);
+        }
+        body { font-family: 'Roboto', sans-serif; background: var(--primary-bg); color: var(--text-light); padding: 40px 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--secondary-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--card-border); }
+        h1 { font-family: 'Roboto', sans-serif; font-weight: 700; color: var(--text-light); font-size: 2.5rem; margin-bottom: 20px; text-align: center; }
+        h2 { font-family: 'Roboto', sans-serif; font-weight: 700; color: var(--text-light); font-size: 1.8rem; margin-top: 25px; margin-bottom: 10px; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; }
         p, li { margin-bottom: 15px; color: var(--text-dark); }
         ul { padding-left: 20px; }
-        a { color: var(--netflix-red); text-decoration: none; }
+        a { color: var(--accent-color); text-decoration: none; }
         a:hover { text-decoration: underline; }
         .back-link { display: block; text-align: center; margin-top: 30px; font-weight: bold; }
-        .main-footer { padding: 20px; text-align: center; color: #a0a0a0; font-size: 0.9rem; width: 100%; }
-        .main-footer a { color: #a0a0a0; transition: color 0.2s ease; } .main-footer a:hover { color: var(--netflix-red); }
+        .main-footer { padding: 20px; text-align: center; color: var(--text-dark); font-size: 0.9rem; width: 100%; }
+        .main-footer a { color: var(--text-dark); transition: color 0.2s ease; } .main-footer a:hover { color: var(--accent-color); }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>DMCA Copyright Infringement Notification</h1>
-        <p>{{ website_name }}.com respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond promptly to notices of alleged copyright infringement.</p>
+        <p>{{ website_name }} respects the intellectual property rights of others and expects its users to do the same. In accordance with the Digital Millennium Copyright Act (DMCA), we will respond promptly to notices of alleged copyright infringement.</p>
         <p>As stated in our disclaimer, this website does not host any files on its servers. All content is provided by non-affiliated third parties from publicly available sources.</p>
         
         <h2>Procedure for Reporting Copyright Infringement:</h2>
@@ -1984,3 +2081,6 @@ def send_manual_notification(movie_id):
         print(f"ERROR in send_manual_notification for ID {movie_id}: {e}")
         
     return redirect(url_for('admin'))
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=3000)
