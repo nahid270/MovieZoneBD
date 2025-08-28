@@ -21,7 +21,9 @@ ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "Moviezonebd")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Moviezonebd")
 
 # [MODIFIED] Centralized website name
-WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "MovieZoneBD") 
+WEBSITE_NAME = os.environ.get("WEBSITE_NAME", "MovieZoneBD")
+# [NEW & IMPORTANT] Add your full website URL in environment variables. Example: https://my-movie-site.vercel.app
+WEBSITE_URL = os.environ.get("WEBSITE_URL", "").rstrip('/')
 
 MAIN_CHANNEL_LINK = os.environ.get("MAIN_CHANNEL_LINK", "https://t.me/+60goZWp-FpkxNzVl")
 UPDATE_CHANNEL_LINK = os.environ.get("UPDATE_CHANNEL_LINK", "https://t.me/AllBotUpdatemy")
@@ -34,6 +36,7 @@ required_vars = {
     "MONGO_URI": MONGO_URI, "BOT_TOKEN": BOT_TOKEN, "TMDB_API_KEY": TMDB_API_KEY,
     "ADMIN_CHANNEL_ID": ADMIN_CHANNEL_ID, "BOT_USERNAME": BOT_USERNAME,
     "ADMIN_USERNAME": ADMIN_USERNAME, "ADMIN_PASSWORD": ADMIN_PASSWORD,
+    "WEBSITE_URL": WEBSITE_URL, # Added validation for the new variable
     "MAIN_CHANNEL_LINK": MAIN_CHANNEL_LINK,
     "UPDATE_CHANNEL_LINK": UPDATE_CHANNEL_LINK,
     "DEVELOPER_USER_LINK": DEVELOPER_USER_LINK,
@@ -108,7 +111,8 @@ def delete_message_after_delay(chat_id, message_id):
     except Exception as e:
         print(f"Error in delete_message_after_delay: {e}")
 
-def escape_markdown(text: str) -> str:
+# [IMPROVED] This function is for Telegram's MarkdownV2 parse mode
+def escape_markdown_v2(text: str) -> str:
     if not isinstance(text, str): return ''
     escape_chars = r'_*[]()~`>#+-=|{}.!'
     return re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', text)
@@ -123,15 +127,28 @@ def get_youtube_embed_key(url):
     except Exception:
         return None
 
+# =========================================================================
+# === [START] NOTIFICATION FUNCTION - HEAVILY MODIFIED FOR RELIABILITY ====
+# =========================================================================
 def send_notification_to_channel(movie_data):
     if not NOTIFICATION_CHANNEL_ID:
         print("INFO: NOTIFICATION_CHANNEL_ID is not set. Skipping notification.")
         return
 
+    # [FIX] Use the reliable WEBSITE_URL environment variable
+    if not WEBSITE_URL:
+        print("FATAL ERROR: WEBSITE_URL is not set. Cannot generate notification link.")
+        return
+
     try:
+        # We need an app context to use url_for
         with app.app_context():
-            host_url = f"https://{os.environ.get('VERCEL_URL')}" if os.environ.get('VERCEL_URL') else 'http://localhost:3000'
-            movie_url = f"{host_url}{url_for('movie_detail', movie_id=str(movie_data['_id']))}"
+            # Generate the relative path first
+            relative_url = url_for('movie_detail', movie_id=str(movie_data['_id']))
+            # Combine with the base URL
+            movie_url = f"{WEBSITE_URL}{relative_url}"
+
+        print(f"DEBUG: Generated movie URL for notification: {movie_url}") # For debugging
 
         title = movie_data.get('title', 'N/A')
         poster_url = movie_data.get('poster')
@@ -144,18 +161,21 @@ def send_notification_to_channel(movie_data):
         caption_parts = []
         keyboard = {}
 
+        # [IMPROVED] Escape title for MarkdownV2
+        escaped_title = escape_markdown_v2(title)
+
         if is_coming_soon:
-            caption_parts.append(f"⏳ **Coming Soon!** ⏳\n\n🎬 **{title}**\n")
-            caption_parts.append("Get ready! This content will be available on our platform very soon. Stay tuned!")
+            caption_parts.append(f"⏳ *Coming Soon\\!* ⏳\n\n🎬 *{escaped_title}*\n\n")
+            caption_parts.append("Get ready\\! This content will be available on our platform very soon\\. Stay tuned\\!")
         else:
             year = movie_data.get('release_date', '----').split('-')[0]
             genres = ", ".join(movie_data.get('genres', []))
             rating = movie_data.get('vote_average', 0)
 
-            caption_parts.append(f"✨ **New Content Added!** ✨\n\n🎬 **{title} ({year})**\n")
-            if genres: caption_parts.append(f"🎭 **Genre:** {genres}\n")
-            if rating > 0: caption_parts.append(f"⭐ **Rating:** {rating:.1f}/10\n")
-            caption_parts.append("\n👇 Click the button below to watch or download now from our website!")
+            caption_parts.append(f"✨ *New Content Added\\!* ✨\n\n🎬 *{escaped_title} \\({year}\\)*\n")
+            if genres: caption_parts.append(f"🎭 *Genre:* {escape_markdown_v2(genres)}\n")
+            if rating > 0: caption_parts.append(f"⭐ *Rating:* {rating:.1f}/10\n")
+            caption_parts.append("\n👇 Click the button below to watch or download now from our website\\!")
 
             keyboard = {"inline_keyboard": [[{"text": "➡️ Watch / Download on Website", "url": movie_url}]]}
 
@@ -165,15 +185,15 @@ def send_notification_to_channel(movie_data):
             'chat_id': NOTIFICATION_CHANNEL_ID,
             'photo': poster_url,
             'caption': caption,
-            'parse_mode': 'Markdown',
+            'parse_mode': 'MarkdownV2', # [IMPROVED] Using MarkdownV2 for better formatting
             'reply_markup': json.dumps(keyboard) if keyboard else None
         }
 
         response = requests.post(api_url, data=payload, timeout=15)
-        response.raise_for_status()
-        response_data = response.json()
 
-        if response_data.get('ok'):
+        # [IMPROVED] Better error handling and logging
+        if response.status_code == 200 and response.json().get('ok'):
+            response_data = response.json()
             print(f"SUCCESS: Notification sent for '{title}'.")
             if "Trending" in movie_data.get('categories', []) and not is_coming_soon:
                 message_id = response_data['result']['message_id']
@@ -183,10 +203,16 @@ def send_notification_to_channel(movie_data):
                 if pin_response.json().get('ok'):
                     print(f"SUCCESS: Message {message_id} pinned in the channel.")
         else:
-            print(f"ERROR: Failed to send notification. Telegram API response: {response.text}")
+            print(f"ERROR: Failed to send notification for '{title}'. Status Code: {response.status_code}")
+            print(f"Telegram API Response: {response.text}")
 
     except Exception as e:
-        print(f"FATAL ERROR in send_notification_to_channel: {e}")
+        print(f"FATAL EXCEPTION in send_notification_to_channel: {e}")
+
+# =========================================================================
+# === [END] NOTIFICATION FUNCTION =========================================
+# =========================================================================
+
 
 # =========================================================================================
 # === [START] ALL HTML TEMPLATES ==========================================================
@@ -615,8 +641,6 @@ index_html = """
 </html>
 """
 
-# [NOTE] Detail page HTML template is not included here for brevity but would need similar CSS variable replacements.
-# For a full implementation, you would apply the new color variables (--accent-color, etc.) to the `detail_html` styles as well.
 detail_html = """
 <!DOCTYPE html>
 <html lang="en">
@@ -1426,6 +1450,9 @@ dmca_html = """
 # =======================================================================================
 
 
+# =========================================================================
+# === [START] PARSE FILENAME FUNCTION - FIXED REGEX =======================
+# =========================================================================
 def parse_filename(filename):
     LANGUAGE_MAP = {
         'hindi': 'Hindi', 'hin': 'Hindi', 'english': 'English', 'eng': 'English',
@@ -1477,9 +1504,10 @@ def parse_filename(filename):
             if final_title:
                 return {'type': 'series_pack', 'title': final_title, 'season': season_num, 'quality': quality, 'languages': languages}
 
+    # [FIXED] The regex patterns are now more specific to avoid false positives on movies
     series_patterns = [
-        re.compile(r'^(.*?)[\s\.]*(?:S|Season)[\s\.]?(\d{1,2})[\s\.]*(?:E|Ep|Episode)[\s\.]?(\d{1,3})', re.I),
-        re.compile(r'^(.*?)[\s\.]*(?:E|Ep|Episode)[\s\.]?(\d{1,3})', re.I)
+        re.compile(r'^(.*?)[\s\.]*(?:S|Season)[\s\.]?(\d{1,2})[\s\.]*\b(?:E|Ep|Episode)[\s\.]?(\d{1,3})\b', re.I),
+        re.compile(r'^(.*?)[\s\.]*\b(?:E|Ep|Episode)[\s\.]?(\d{1,3})\b', re.I)
     ]
     for i, pattern in enumerate(series_patterns):
         match = pattern.search(processed_name)
@@ -1507,6 +1535,9 @@ def parse_filename(filename):
     final_title = ' '.join(temp_title.split()).title()
     
     return {'type': 'movie', 'title': final_title, 'year': year, 'quality': quality, 'languages': languages} if final_title else None
+# =========================================================================
+# === [END] PARSE FILENAME FUNCTION =======================================
+# =========================================================================
 
 def get_tmdb_details_from_api(tmdb_id, content_type):
     if not TMDB_API_KEY:
@@ -2030,10 +2061,10 @@ def telegram_webhook():
                     
                     if message_to_copy_id:
                         caption_text = (
-                            f"🎬 *{escape_markdown(content['title'])}* {escape_markdown(file_info_text)}\n\n"
+                            f"🎬 *{escape_markdown_v2(content['title'])}* {escape_markdown_v2(file_info_text)}\n\n"
                             f"✅ *Successfully Sent To Your PM*\n\n"
-                            f"🔰 Join Our Main Channel\n➡️ [{escape_markdown(BOT_USERNAME)} Main]({MAIN_CHANNEL_LINK})\n\n"
-                            f"📢 Join Our Update Channel\n➡️ [{escape_markdown(BOT_USERNAME)} Official]({UPDATE_CHANNEL_LINK})\n\n"
+                            f"🔰 Join Our Main Channel\n➡️ [{escape_markdown_v2(BOT_USERNAME)} Main]({MAIN_CHANNEL_LINK})\n\n"
+                            f"📢 Join Our Update Channel\n➡️ [{escape_markdown_v2(BOT_USERNAME)} Official]({UPDATE_CHANNEL_LINK})\n\n"
                             f"💬 For Any Help or Request\n➡️ [Contact Developer]({DEVELOPER_USER_LINK})"
                         )
                         payload = {'chat_id': chat_id, 'from_chat_id': ADMIN_CHANNEL_ID, 'message_id': message_to_copy_id, 'caption': caption_text, 'parse_mode': 'MarkdownV2'}
@@ -2052,15 +2083,9 @@ def telegram_webhook():
                     requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': "An unexpected error occurred."})
             else: 
                 welcome_message = (f"👋 Welcome to {BOT_USERNAME}!\n\nBrowse all our content on our website.")
-                try:
-                    with app.app_context():
-                        root_url = url_for('home', _external=True)
-                    keyboard = {"inline_keyboard": [[{"text": "🎬 Visit Website", "url": root_url}]]}
-                    requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': welcome_message, 'reply_markup': json.dumps(keyboard)})
-                except Exception as e:
-                     print(f"Error sending welcome message: {e}")
-                     requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': welcome_message})
-
+                keyboard = {"inline_keyboard": [[{"text": "🎬 Visit Website", "url": WEBSITE_URL or "about:blank"}]]}
+                requests.get(f"{TELEGRAM_API_URL}/sendMessage", params={'chat_id': chat_id, 'text': welcome_message, 'reply_markup': json.dumps(keyboard)})
+                
     return jsonify(status='ok')
 
 
